@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,6 +38,7 @@ class LoginsigninViewModel {
         }
 
     }
+     @SuppressLint("SuspiciousIndentation")
      suspend fun signUp(email : String, password : String) {
        val res = model.signUp(email, password)
          print(res)

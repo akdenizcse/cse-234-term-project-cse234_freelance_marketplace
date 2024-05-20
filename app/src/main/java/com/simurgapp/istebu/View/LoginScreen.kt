@@ -10,10 +10,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -47,6 +50,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.simurgapp.istebu.ui.theme.IsteBuTheme
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.Orange500
@@ -55,13 +59,13 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(navController: NavHostController){
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        LogInContent()
-    }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
+        LogInContent(navController = navController)
+    }
 }
 
 
@@ -144,7 +148,7 @@ fun SignLoginTextField(labelText: String, leadingIconOne: ImageVector?, colorOne
 }
 
 @Composable
-fun LogInContent() {
+fun LogInContent(navController: NavHostController) {
     val viewModel :LoginsigninViewModel = LoginsigninViewModel()
     val signInState by viewModel.signInState.collectAsState()
     var emailText = remember { mutableStateOf("") }
@@ -161,16 +165,7 @@ fun LogInContent() {
         SignLoginTextField("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
         Text(text = emailText.value)
         Text(text = passwordText.value)
-        FilledTonalButtonExample(onClick = {
 
-            coroutineScope.launch { // Use the coroutine scope to launch a new coroutine
-                 var result = viewModel.signUp(emailText.value, passwordText.value)
-                println("basıldı")
-                println(result)
-
-            }
-
-        }, text = "Sign Up" )
         FilledTonalButtonExample(onClick = {
 
             coroutineScope.launch { // Use the coroutine scope to launch a new coroutine
@@ -181,9 +176,15 @@ fun LogInContent() {
             }
 
         }, text = "Log in" )
+        Spacer(modifier = Modifier.height(16.dp))
+        FilledTonalButtonExample(onClick = {
+
+            navController.navigate("signup"){
 
 
+            }
 
+        }, text = "Sign up" )
 
     }
 }
