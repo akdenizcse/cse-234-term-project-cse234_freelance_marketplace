@@ -1,22 +1,17 @@
 package com.simurgapp.istebu.View
 
 import LoginsigninViewModel
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,13 +22,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,7 +43,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.simurgapp.istebu.ui.theme.IsteBuTheme
+import com.simurgapp.istebu.ViewModel.BackViewModel
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.Orange500
 import com.simurgapp.istebu.ui.theme.darkerOrange
@@ -59,12 +51,12 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(navController: NavHostController){
+fun LoginScreen(navController: NavHostController , backViewModel: BackViewModel){
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        LogInContent(navController = navController)
+        LogInContent(navController = navController, backViewModel)
     }
 }
 
@@ -148,12 +140,13 @@ fun SignLoginTextField(labelText: String, leadingIconOne: ImageVector?, colorOne
 }
 
 @Composable
-fun LogInContent(navController: NavHostController) {
+fun LogInContent(navController: NavHostController, backViewModel: BackViewModel) {
     val viewModel :LoginsigninViewModel = LoginsigninViewModel()
     val signInState by viewModel.signInState.collectAsState()
     var emailText = remember { mutableStateOf("") }
     var passwordText = remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
+    val iBack by backViewModel.isBack.collectAsState()
 
 
     Column (
@@ -178,8 +171,11 @@ fun LogInContent(navController: NavHostController) {
         }, text = "Log in" )
         Spacer(modifier = Modifier.height(16.dp))
         FilledTonalButtonExample(onClick = {
-
+            println("basıldııııı")
+            backViewModel.increment()
+            println(iBack)
             navController.navigate("signup"){
+
 
 
             }

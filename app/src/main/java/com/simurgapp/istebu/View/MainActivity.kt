@@ -15,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -25,7 +27,8 @@ import com.simurgapp.istebu.ui.theme.IsteBuTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
+import androidx.compose.runtime.getValue
+import com.simurgapp.istebu.ViewModel.BackViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -45,39 +48,42 @@ private lateinit var navController: NavHostController
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainActivityContent(navController: NavHostController){
+fun MainActivityContent(navController: NavHostController ){
+    var backViewModel = remember { BackViewModel() }
+
     Scaffold(
         topBar = {
-            MyTopAppBar(navController = navController)
+            MyTopAppBar(navController = navController , backViewModel)
         },
         content = {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                AppNav(navController = navController)
+                AppNav(navController = navController, backViewModel = backViewModel)
             }
         }
     )
 
 }
 @Composable
-fun AppNav(navController : NavHostController){
+fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
+
     NavHost(navController = navController, startDestination = "home") {
-        composable("login") { LoginScreen(navController) }
-        composable("home") { MainScreen(navController)}
+        composable("login") { LoginScreen(navController , backViewModel) }
+        composable("home") { MainScreen(navController , backViewModel) }
         composable("signup") { SignUpScreen() }
     }
 }
 @Composable
-fun MainScreen (navHostController: NavHostController) {
+fun MainScreen (navHostController: NavHostController , backViewModel: BackViewModel) {
     var isLogin : Boolean = false
 
     if (isLogin) {
         Greeting("deneme")
     }
     else {
-       LoginScreen(navHostController)
+       LoginScreen(navHostController ,backViewModel)
     }
 }
 @Composable
@@ -96,9 +102,11 @@ fun GreetingPreview() {
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun MyTopAppBar(navController: NavHostController) {
-    var isBack = navController.currentBackStackEntry.toString()
+fun MyTopAppBar(navController: NavHostController , backViewModel: BackViewModel) {
+
+    val isBack by backViewModel.isBack.collectAsState()
 
     TopAppBar(
         backgroundColor = Color(255, 165, 0),
@@ -106,11 +114,14 @@ fun MyTopAppBar(navController: NavHostController) {
         title = { Text(text = "İşteBu" , fontSize = 24.sp , textAlign = TextAlign.Center) },
 
         navigationIcon = {
+            if (isBack > 0) {
                 IconButton(onClick = {
-                    println(isBack)
-                    navController.navigateUp() }) {
+                    backViewModel.decrement()
+                    navController.popBackStack()
+                }) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                 }
+            }
 
 
         },
