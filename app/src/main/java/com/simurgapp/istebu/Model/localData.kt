@@ -6,11 +6,9 @@ class SharedPreferencesHelper(context: Context) {
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-
     fun saveUID(uid: String) {
         sharedPreferences.edit().putString("uid", uid).apply()
     }
-
     fun getUID(): String? {
         return sharedPreferences.getString("uid", null)
     }
@@ -18,7 +16,6 @@ class SharedPreferencesHelper(context: Context) {
     fun saveLoginState(isLoggedIn: Boolean) {
         sharedPreferences.edit().putBoolean("is_logged_in", isLoggedIn).apply()
     }
-
     fun isLoggedIn(): Boolean {
         return sharedPreferences.getBoolean("is_logged_in", false)
     }

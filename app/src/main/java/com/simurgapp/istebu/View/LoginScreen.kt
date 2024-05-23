@@ -42,7 +42,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import com.simurgapp.istebu.ViewModel.BackViewModel
@@ -62,83 +61,7 @@ fun LoginScreen(navController: NavHostController , backViewModel: BackViewModel)
 }
 
 
-@Composable
- fun FilledTonalButtonExample(onClick: () -> Unit , text : String) {
-    val gradient = Brush.horizontalGradient(
-        colors = listOf(Orange200, darkerOrange)
-    )
 
-    Box(
-        modifier = Modifier
-            .background(brush = gradient, shape = RoundedCornerShape(20.dp))
-            .padding(1.dp),
-
-    ) {
-        FilledTonalButton(
-            onClick = onClick,
-            colors = ButtonDefaults.filledTonalButtonColors(
-                containerColor = Color.Transparent
-            ),
-            shape = RoundedCornerShape(22.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.40f)
-        ) {
-            Text(text , fontSize = 20.sp)
-        }
-    }
-}
-
-
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun SignLoginTextField(labelText: String, leadingIconOne: ImageVector?, colorOne:Color, colorTwo: Color , text : MutableState<String>) {
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val inputModifier = Modifier
-        .padding(horizontal = 16.dp)
-        .fillMaxWidth(0.66f)
-        .border(
-            BorderStroke(
-                width = 4.dp,
-                brush = Brush.horizontalGradient(colors = listOf(colorOne, colorTwo))
-            ),
-            shape = RoundedCornerShape(50.dp)
-        )
-        .padding(8.dp)
-    var leadingIcons: (@Composable () -> Unit)? = null
-    if (leadingIconOne != null) {
-        leadingIcons = {
-            Icon(imageVector = leadingIconOne, contentDescription = null)
-        }
-    }
-    Column {
-        // TextField
-        TextField(value = text.value, onValueChange = {
-            text.value = it
-        },
-
-            leadingIcon = leadingIcons,
-
-            label = { Text(labelText) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
-            modifier = inputModifier,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            singleLine = true
-
-        )
-
-
-    }
-}
 
 @Composable
 fun LogInContent(navController: NavHostController, backViewModel: BackViewModel) {
@@ -166,25 +89,24 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        SignLoginTextField("Email", Icons.Default.Email, Orange200, Orange500, emailText)
+        TextField1("Email", Icons.Default.Email, Orange200, Orange500, emailText)
         Spacer(modifier = Modifier.padding(8.dp))
-        SignLoginTextField("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
+        TextField1("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
         Text(text = emailText.value)
         Text(text = passwordText.value)
 
-        FilledTonalButtonExample(onClick = {
+        FilledTonalButton(onClick = {
 
-             viewModel.signIn(emailText.value, passwordText.value)
+            viewModel.signIn(emailText.value, passwordText.value)
 
 
         }, text = "Log in" )
         Spacer(modifier = Modifier.height(16.dp))
-        FilledTonalButtonExample(onClick = {
+        FilledTonalButton(onClick = {
             println("basıldııııı")
             backViewModel.increment()
             println(iBack)
             navController.navigate("signup"){
-
 
 
             }

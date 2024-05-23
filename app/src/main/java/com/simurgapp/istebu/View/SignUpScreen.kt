@@ -39,11 +39,11 @@ Box( modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        SignLoginTextField("Email", Icons.Default.Email, Orange200, Orange500, emailText)
+        TextField1("Email", Icons.Default.Email, Orange200, Orange500, emailText)
         Spacer(modifier = Modifier.padding(8.dp))
-        SignLoginTextField("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
+        TextField1("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
         Spacer(modifier = Modifier.padding(8.dp))
-        SignLoginTextField(
+        TextField1(
             "Password Again",
             Icons.Default.Lock,
             Orange200,
@@ -52,7 +52,7 @@ Box( modifier = Modifier.fillMaxSize(),
         )
         Spacer(modifier = Modifier.padding(16.dp))
 
-        FilledTonalButtonExample(onClick = {
+        FilledTonalButton(onClick = {
             var result = viewModel.signUp(emailText.value, passwordText.value)
             println(result)
 

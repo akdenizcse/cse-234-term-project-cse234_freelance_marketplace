@@ -28,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.getValue
+import com.simurgapp.istebu.Model.FirestoreUserRepository
 import com.simurgapp.istebu.ViewModel.BackViewModel
 
 
@@ -88,6 +89,11 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         text = "deneme2 $name!",
         modifier = modifier
     )
+    FilledTonalButton(onClick = {
+        val deneme = FirestoreUserRepository()
+        deneme.add()
+
+    }, text = "ekle")
 }
 
 @Preview(showBackground = true)
