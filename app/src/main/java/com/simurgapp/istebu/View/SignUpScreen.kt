@@ -13,21 +13,23 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.Orange500
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun SignUpScreen() {
     var emailText = remember { mutableStateOf("") }
     var passwordText = remember { mutableStateOf("") }
     var passwordText2 = remember { mutableStateOf("") }
-    val viewModel = LoginsigninViewModel()
-    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
+    val viewModel = LoginsigninViewModel(sharedPreferencesHelper)
 
 
 Box( modifier = Modifier.fillMaxSize(),
@@ -51,10 +53,9 @@ Box( modifier = Modifier.fillMaxSize(),
         Spacer(modifier = Modifier.padding(16.dp))
 
         FilledTonalButtonExample(onClick = {
-            coroutineScope.launch {
-                var result = viewModel.signUp(emailText.value, passwordText.value)
-                println(result)
-            }
+            var result = viewModel.signUp(emailText.value, passwordText.value)
+            println(result)
+
         }, text = "Sign Up")
 
     }

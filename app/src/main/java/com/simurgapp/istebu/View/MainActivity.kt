@@ -69,7 +69,7 @@ fun MainActivityContent(navController: NavHostController ){
 @Composable
 fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
 
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "login") {
         composable("login") { LoginScreen(navController , backViewModel) }
         composable("home") { MainScreen(navController , backViewModel) }
         composable("signup") { SignUpScreen() }
@@ -77,14 +77,10 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
 }
 @Composable
 fun MainScreen (navHostController: NavHostController , backViewModel: BackViewModel) {
-    var isLogin : Boolean = false
 
-    if (isLogin) {
         Greeting("deneme")
-    }
-    else {
-       LoginScreen(navHostController ,backViewModel)
-    }
+
+
 }
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
@@ -102,7 +98,6 @@ fun GreetingPreview() {
     }
 }
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun MyTopAppBar(navController: NavHostController , backViewModel: BackViewModel) {
 
@@ -111,7 +106,7 @@ fun MyTopAppBar(navController: NavHostController , backViewModel: BackViewModel)
     TopAppBar(
         backgroundColor = Color(255, 165, 0),
         contentColor = Color.Black,
-        title = { Text(text = "İşteBu" , fontSize = 24.sp , textAlign = TextAlign.Center) },
+        title = { Text(text = "İşteBu" , fontSize = 24.sp , textAlign = TextAlign.Center , color = Color.White) },
 
         navigationIcon = {
             if (isBack > 0) {
@@ -122,8 +117,6 @@ fun MyTopAppBar(navController: NavHostController , backViewModel: BackViewModel)
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                 }
             }
-
-
         },
         actions = {
 

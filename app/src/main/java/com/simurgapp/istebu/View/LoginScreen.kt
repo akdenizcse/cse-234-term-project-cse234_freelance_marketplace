@@ -31,23 +31,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import com.simurgapp.istebu.ViewModel.BackViewModel
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.Orange500
 import com.simurgapp.istebu.ui.theme.darkerOrange
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -141,14 +142,26 @@ fun SignLoginTextField(labelText: String, leadingIconOne: ImageVector?, colorOne
 
 @Composable
 fun LogInContent(navController: NavHostController, backViewModel: BackViewModel) {
-    val viewModel :LoginsigninViewModel = LoginsigninViewModel()
-    val signInState by viewModel.signInState.collectAsState()
-    var emailText = remember { mutableStateOf("") }
-    var passwordText = remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
+    var emailText = remember { mutableStateOf("a@b.com") }
+    var passwordText = remember { mutableStateOf("123456") }
     val iBack by backViewModel.isBack.collectAsState()
+    val context = LocalContext.current
+    val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
+    val viewModel :LoginsigninViewModel = LoginsigninViewModel(sharedPreferencesHelper)
+    val signInState by viewModel.signInState.collectAsState()
+    val isLoggedIn by viewModel.isLoggedIn.collectAsState()
 
 
+
+    if (signInState?.isSuccess == true || isLoggedIn) {
+        navController.navigate("home", builder = {
+            popUpTo("login") {
+                inclusive = true
+            }
+
+        })
+        println("true ooduuuuuuuu")
+    }
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -161,12 +174,8 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
 
         FilledTonalButtonExample(onClick = {
 
-            coroutineScope.launch { // Use the coroutine scope to launch a new coroutine
-                var result = viewModel.signIn(emailText.value, passwordText.value)
-                println("basıldı")
-                println(result)
+             viewModel.signIn(emailText.value, passwordText.value)
 
-            }
 
         }, text = "Log in" )
         Spacer(modifier = Modifier.height(16.dp))
