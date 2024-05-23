@@ -18,15 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
+import com.simurgapp.istebu.View.UIElements.FilledTonalButton
+import com.simurgapp.istebu.View.UIElements.TextFieldOne
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.Orange500
 
 
 @Composable
 fun SignUpScreen() {
-    var emailText = remember { mutableStateOf("") }
-    var passwordText = remember { mutableStateOf("") }
-    var passwordText2 = remember { mutableStateOf("") }
+    val emailText = remember { mutableStateOf("") }
+    val passwordText = remember { mutableStateOf("") }
+    val passwordText2 = remember { mutableStateOf("") }
     val context = LocalContext.current
     val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
     val viewModel = LoginsigninViewModel(sharedPreferencesHelper)
@@ -39,11 +41,11 @@ Box( modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TextField1("Email", Icons.Default.Email, Orange200, Orange500, emailText)
+        TextFieldOne("Email", Icons.Default.Email, Orange200, Orange500, emailText)
         Spacer(modifier = Modifier.padding(8.dp))
-        TextField1("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
+        TextFieldOne("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
         Spacer(modifier = Modifier.padding(8.dp))
-        TextField1(
+        TextFieldOne(
             "Password Again",
             Icons.Default.Lock,
             Orange200,
@@ -53,7 +55,7 @@ Box( modifier = Modifier.fillMaxSize(),
         Spacer(modifier = Modifier.padding(16.dp))
 
         FilledTonalButton(onClick = {
-            var result = viewModel.signUp(emailText.value, passwordText.value)
+            val result = viewModel.signUp(emailText.value, passwordText.value)
             println(result)
 
         }, text = "Sign Up")
