@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
@@ -36,9 +38,9 @@ sealed class BottomNavigationBar(val route: String, val title: String, val icon:
     data object Profile : BottomNavigationBar("profile", "Profile", Icons.Default.Person)
     data object Messages : BottomNavigationBar("messages", "Messages", Icons.Default.Email)
 
-    data object Jobs : BottomNavigationBar("jobs", "Jobs", Icons.Default.ShoppingCart)
+    data object Jobs : BottomNavigationBar("jobs", "Jobs", Icons.Default.List)
 
-    data object Freelancers : BottomNavigationBar("freelancers", "Freelancers", Icons.Default.Build)
+    data object Freelancers : BottomNavigationBar("freelancers", "Freelancers", Icons.Default.Face)
 }
 
 @Composable
@@ -56,18 +58,20 @@ fun BottomBar(navController: NavHostController) {
     val currentDestination = navStackBackEntry?.destination
 
     Row {
-        Row(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-                .background(Color.Transparent)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            items.forEach { screen ->
-            AddItem(items = screen, currentDestination =currentDestination , navController = navController )
+        Box (
+            modifier = Modifier.height(60.dp).fillMaxWidth().background(Color.White),
+            contentAlignment = Alignment.Center
+        ){
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items.forEach { screen ->
+                    AddItem(items = screen, currentDestination =currentDestination , navController = navController )
+                }
+        }
 
-            }
         }
 
     }
@@ -88,11 +92,7 @@ fun AddItem(
             if (selected) Color.White else Color.Black
 
         Box(
-            modifier = Modifier
-                .height(40.dp)
-                .clip(CircleShape)
-                .background(background)
-                .clickable(onClick = {
+            modifier = Modifier.height(40.dp).clip(CircleShape).background(background).clickable(onClick = {
                     navController.navigate(items.route) {
                         popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true

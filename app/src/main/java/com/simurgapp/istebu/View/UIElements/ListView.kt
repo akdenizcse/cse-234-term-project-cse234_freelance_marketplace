@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -18,23 +18,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 @Composable
 
-fun <T> GenericListView (list : List<T> ,itemContent: @Composable (T) -> Unit){
-     LazyColumn(
-         modifier = Modifier.fillMaxSize()
-     ) {
-        items(list) { item ->
-            itemContent(item)
-        }
+fun <T> GenericListView (list : List<T> ,itemContent: @Composable (T , Int) -> Unit) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(list) {  item ->
+            val index = list.indexOf(item)
+            itemContent(item, index)
 
         }
-     }
+    }
 
-
+}
 @Composable
 fun CircleImage(
     imageUrl: String,
     modifier: Modifier = Modifier,
-    contentDescription: String? = null
+    contentDescription: String? = null,
+    size: Int = 100
 ) {
     val painter: Painter = rememberImagePainter(
         data = imageUrl,
@@ -42,16 +43,17 @@ fun CircleImage(
             transformations(CircleCropTransformation())
         }
     )
+    val imageSize = size*0.8
 
     Box(
-        modifier = modifier.size(100.dp),
+        modifier = modifier.size(size.dp),
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painter,
             contentDescription = contentDescription,
             modifier = Modifier
-                .size(80.dp)
+                .size(imageSize.dp)
                 .padding(4.dp)
                 .clip(CircleShape)
                     ,
@@ -61,20 +63,20 @@ fun CircleImage(
 }
 
 @Composable
-fun PicTextItem() {
-Row {
-    CircleImage(imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixlr.com%2Fimage-generator%2F&psig=AOvVaw1z1JasaKX0ApoOLMoVV8wx&ust=1716590292766000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCLjr06brpIYDFQAAAAAdAAAAABAE")
-    Spacer(modifier = Modifier.width(16.dp))
-    Column {
-        Text("Title")
-        Text("Subtitle")
+fun PicTextItem(sire: String, title: String, subtitle: String , imageUrl: String,onClick: () -> Unit) {
+
+    Row(
+        modifier = Modifier.clickable( onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CircleImage(imageUrl = imageUrl,size = 100)
+        Spacer(modifier = Modifier.width(12.dp))
+        Column {
+            Text(title)
+            Text(subtitle)
+        }
     }
 }
-}
 
-@Preview
-@Composable
-fun PicTextItemPreview() {
-PicTextItem()
-}
+
 
