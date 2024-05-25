@@ -36,12 +36,32 @@ class tempData {
         "https://phototrend.fr/wp-content/uploads/2022/05/a-photo-of-a-raccoon-wearing-an-astronaut-helmet.jpeg",
         "https://www.justgeek.fr/wp-content/uploads/2022/12/exemple-image-midjourney.webp",
         )
+    val caarerFields = mutableListOf(
+        "Graphic Design",
+        "Programming",
+        "Translation",
+        "Teaching",
+        "Fitness Training",
+        "UI/UX Design",
+        "Video Editing",
+        "Voiceover",
+        "Life Coaching",
+        "Nutrition Coach",
+        "Photoshop",
+        "Illustration",
+        "Animation",
+        "Social Media Management",
+        "Marketing",
+        "Copywriting",
+
+
+    )
 
     val freelancerClass : MutableList<FreelancerClass> = mutableListOf()
     fun getFreeLancerClass() : MutableList<FreelancerClass> {
         for (i in 0..94) {
             try {
-                freelancerClass.add(FreelancerClass("UID$i", names[i], "Surname$i", images.random(), "email$i", "phoneNumber$i", "education$i", 0.0f,names,names,jobs,jobs , "country$i", "city$i"))
+               // freelancerClass.add(FreelancerClass("UID$i", names[i], "Surname$i", images.random(), "email$i", "phoneNumber$i", "education$i", 0.0f,names,names,jobs,jobs , "country$i", "city$i"))
             }catch (e: IndexOutOfBoundsException) {
                 println(e.message)
             }

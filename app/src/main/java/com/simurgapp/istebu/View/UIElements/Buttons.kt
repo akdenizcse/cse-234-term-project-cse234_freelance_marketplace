@@ -23,7 +23,7 @@ import com.simurgapp.istebu.ui.theme.darkerOrange
 
 
 @Composable
-fun FilledTonalButton(onClick: () -> Unit, text : String) {
+fun FilledTonalButton(onClick: () -> Unit, text : String ,fontSize : Int = 20 ,isFillMaxWidth : Boolean = false) {
     val gradient = Brush.horizontalGradient(
         colors = listOf(Orange200, darkerOrange)
     )
@@ -40,10 +40,14 @@ fun FilledTonalButton(onClick: () -> Unit, text : String) {
                 containerColor = Color.Transparent
             ),
             shape = RoundedCornerShape(22.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.40f)
+            modifier = if (isFillMaxWidth) {
+                Modifier.fillMaxWidth(0.4f)
+            } else {
+                Modifier
+            }
         ) {
-            Text(text , fontSize = 20.sp)
+            Text(text , fontSize = fontSize.sp)
+
         }
     }
 }

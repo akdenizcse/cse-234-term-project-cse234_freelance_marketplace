@@ -69,7 +69,8 @@ fun PicTextItem(sire: String, title: String, subtitle: String , imageUrl: String
         modifier = Modifier.clickable( onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CircleImage(imageUrl = imageUrl,size = 100)
+
+        CircleImage(imageUrl = imageUrl, size = 100)
         Spacer(modifier = Modifier.width(12.dp))
         Column {
             Text(title)

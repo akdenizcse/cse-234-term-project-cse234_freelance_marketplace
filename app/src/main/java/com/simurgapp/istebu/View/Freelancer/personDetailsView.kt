@@ -7,7 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.simurgapp.istebu.Model.FreelancerClass
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.UIElements.CircleImage
 
@@ -23,7 +24,11 @@ fun freelancerDetailsScreen(index: Int) {
         Column()
         {
             CircleImage(imageUrl =freelancer.imageURL , size = 200)
-            Text(text = freelancer.name + " " + freelancer.surname)
+            Text(text = freelancer.name + " " + freelancer.surname,
+                fontSize = 24.sp, // Metin boyutunu büyüt
+                fontWeight = FontWeight.Bold // Metni kalın yap
+
+            )
             Text(text = freelancer.skills[0])
         }
 

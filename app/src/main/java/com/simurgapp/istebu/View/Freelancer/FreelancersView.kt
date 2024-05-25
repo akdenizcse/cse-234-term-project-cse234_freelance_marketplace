@@ -23,7 +23,7 @@ fun FreelancersScreen(navController: NavController) {
 
 
         try {
-            freelancerClass.add(FreelancerClass("UID$i", tempData.names[i], "Surname$i", tempData.images.random(), "email$i", "phoneNumber$i", "education$i", 0.0f,tempData.names,tempData.names,tempData.jobs,tempData.jobs , "country$i", "city$i"))
+            //freelancerClass.add(FreelancerClass("UID$i", tempData.names[i], "Surname$i", tempData.images.random(), "email$i", "phoneNumber$i", "education$i", 0.0f,tempData.names,tempData.names,tempData.jobs,tempData.jobs , "country$i", "city$i"))
 
         }catch (
         e: IndexOutOfBoundsException

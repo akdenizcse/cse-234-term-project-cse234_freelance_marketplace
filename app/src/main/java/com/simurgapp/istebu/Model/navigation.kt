@@ -11,7 +11,7 @@ import com.simurgapp.istebu.View.JobsScreen
 import com.simurgapp.istebu.View.LoginScreen
 import com.simurgapp.istebu.View.MainScreen
 import com.simurgapp.istebu.View.MessagesScreen
-import com.simurgapp.istebu.View.ProfileScreen
+import com.simurgapp.istebu.View.Profile.ProfileView
 import com.simurgapp.istebu.View.SignUpScreen
 import com.simurgapp.istebu.View.Freelancer.freelancerDetailsScreen
 import com.simurgapp.istebu.ViewModel.BackViewModel
@@ -24,7 +24,7 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
         composable("login") { LoginScreen(navController , backViewModel) }
         composable("home") { MainScreen(navController , backViewModel) }
         composable("signup") { SignUpScreen() }
-        composable("profile") { ProfileScreen() }
+        composable("profile") { ProfileView() }
         composable("messages") { MessagesScreen() }
         composable("freelancers") { FreelancersScreen(navController) }
         composable("jobs") { JobsScreen() }
