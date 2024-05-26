@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.simurgapp.istebu.View.Freelancer.CareerFieldsView
+import com.simurgapp.istebu.View.Freelancer.FieldsDetailsView
 import com.simurgapp.istebu.View.Freelancer.FreelancersScreen
 import com.simurgapp.istebu.View.JobsScreen
 import com.simurgapp.istebu.View.RegistrationProcedure.LoginScreen
@@ -40,8 +41,10 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
         }
         composable("getFreelancerInfoView") { GetFreelancerInfoView() }
         composable("getUserInfoView") { GetUserInfoView() }
-        composable("careerFieldsView"){CareerFieldsView()}
+        composable("careerFieldsView"){CareerFieldsView(navController)}
+        composable("fieldsDetailsView/{index}", arguments = listOf(navArgument("index"){type = NavType.IntType})){ backStackEntry ->
+            val index = backStackEntry.arguments?.getInt("index") ?: 0
+            FieldsDetailsView(index,navController)
         }
-
-
+    }
 }

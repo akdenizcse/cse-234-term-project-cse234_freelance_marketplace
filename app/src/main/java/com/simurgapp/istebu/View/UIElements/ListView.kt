@@ -15,7 +15,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
 @Composable
 
 fun <T> GenericListView (list : List<T> ,itemContent: @Composable (T , Int) -> Unit) {
@@ -66,15 +69,16 @@ fun CircleImage(
 fun PicTextItem(sire: String, title: String, subtitle: String , imageUrl: String,onClick: () -> Unit) {
 
     Row(
-        modifier = Modifier.clickable( onClick = onClick),
+        modifier = Modifier.fillMaxWidth().clickable( onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         CircleImage(imageUrl = imageUrl, size = 100)
         Spacer(modifier = Modifier.width(12.dp))
         Column {
-            Text(title)
-            Text(subtitle)
+            Text(title , fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            if (subtitle != "") Text(subtitle)
+
         }
     }
 }

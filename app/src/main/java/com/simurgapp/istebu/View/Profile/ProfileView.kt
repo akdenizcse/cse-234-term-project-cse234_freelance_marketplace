@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,8 +33,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,8 +46,7 @@ import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.CommentsArea
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
-import com.simurgapp.istebu.View.UIElements.IconButtonOne
-import com.simurgapp.istebu.View.UIElements.PicTextItem
+
 
 @Composable
 fun ProfileView(navController: NavController) {
@@ -72,21 +73,29 @@ fun ProfileView(navController: NavController) {
         city = "Istanbul"
     )
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())) {
+    Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.TopCenter) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
             ProfileImageSection(tempData = tempData, imageSize = imageSize)
-            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "${currentUser.name} ${currentUser.surname}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .border(2.dp, Color(0xFF006400), RoundedCornerShape(12.dp))
-                    .fillMaxWidth(0.9f)
-                    .padding(16.dp)
+                    //.border(2.dp, Color(0xFF006400), RoundedCornerShape(12.dp))
+
             )
+            Text(
+                text = currentUser.careerFields.joinToString(", "),
+                fontSize = 18.sp,
+                fontStyle = FontStyle.Italic,
+                color = Color.Gray
+            )
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
             PastProjectsSection(pastProjects = currentUser.pastProjects)
             Spacer(modifier = Modifier.height(16.dp))
             RatingSection(rating = currentUser.rating)
@@ -96,10 +105,12 @@ fun ProfileView(navController: NavController) {
                 Spacer(modifier = Modifier.width(200.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
+
             FilledTonalButton(onClick = { navController.navigate("getFreelancerInfoView") }, text = "Freelancer Olmak İstiyorum")
 
             Spacer(modifier = Modifier.height(16.dp))
             FilledTonalButton(onClick = { navController.navigate("getUserInfoView")}, text ="Üyeliği Tamamla" )
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -124,7 +135,7 @@ fun ProfileImageSection(tempData: tempData, imageSize: Int) {
             modifier = Modifier
                 .size(imageSize.dp)
                 .clip(CircleShape)
-                .shadow(2.5.dp, CircleShape)
+                //.shadow(2.5.dp, CircleShape)
         )
         IconButton(
             onClick = {
@@ -167,7 +178,20 @@ fun ProfileInfoSection(currentUser: FreelancerClass) {
             thickness = 1.dp,
             modifier = Modifier.padding(vertical = 8.dp)
         )
-        ProfileInfoItem(label = "Skills", value = currentUser.careerFields.joinToString(", "))
+        ProfileInfoItem(label = "Country", value =currentUser.country )
+        Divider(
+            color = Color.Gray.copy(alpha = 0.3f),
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        ProfileInfoItem(label = "City", value = currentUser.city)
+        Divider(
+            color = Color.Gray.copy(alpha = 0.3f),
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+
+
     }
 }
 
@@ -206,7 +230,7 @@ fun RatingSection(rating: Float) {
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "Star",
-                tint = if (i <= rating.toInt()) Color.Yellow else Color.Gray,
+                tint = if (i <= rating.toInt()) Color(0xFFFFBF00) else Color.Gray,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -214,20 +238,26 @@ fun RatingSection(rating: Float) {
         Text(text = "$rating/5", fontSize = 16.sp)
     }
 }
-
 @Composable
 fun PastProjectsSection(pastProjects: List<String>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(2.dp)
+            .padding(16.dp)
     ) {
-        Row (horizontalArrangement = Arrangement.SpaceBetween,modifier = Modifier.fillMaxWidth()
-        ){
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(text = "Past Projects", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            IconButtonOne(icon = Icons.Default.ArrowForward, contentDescription = "show all", onClick = { /*TODO*/ })
+            IconButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Show all")
+            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
@@ -236,20 +266,35 @@ fun PastProjectsSection(pastProjects: List<String>) {
                 Card(
                     modifier = Modifier
                         .padding(end = 8.dp)
-                        .width(120.dp)
-                        .height(80.dp),
-
+                        .width(150.dp)
+                        .height(100.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        Color(0xFF2C4E80),
+                                        Color(0xFF00215E)
+                                    )
+                                )
+                            )
                     ) {
-                        Text(text = project, fontSize = 14.sp, textAlign = TextAlign.Center)
+                        Text(
+                            text = project,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            modifier = Modifier.padding(8.dp)
+                        )
                     }
                 }
             }
         }
     }
 }
-
-

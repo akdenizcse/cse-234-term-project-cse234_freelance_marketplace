@@ -40,7 +40,7 @@ sealed class BottomNavigationBar(val route: String, val title: String, val icon:
 
     data object Jobs : BottomNavigationBar("jobs", "Jobs", Icons.Default.List)
 
-    data object Freelancers : BottomNavigationBar("freelancers", "Freelancers", Icons.Default.Face)
+    data object Freelancers : BottomNavigationBar("careerFieldsView", "Freelancers", Icons.Default.Face)
 }
 
 @Composable

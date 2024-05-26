@@ -27,8 +27,7 @@ fun CommentsArea(comments: List<String>) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, RoundedCornerShape(12.dp))
-            .border(2.dp, Color(0xFF006400), RoundedCornerShape(12.dp))
-            .padding(16.dp)
+
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
