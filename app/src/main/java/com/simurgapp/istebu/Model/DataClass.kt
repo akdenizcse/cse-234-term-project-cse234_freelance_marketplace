@@ -1,7 +1,5 @@
 package com.simurgapp.istebu.Model
 
-import android.content.IntentSender.OnFinished
-
 
 data class FreelancerClass(
     var UID: String,
@@ -15,11 +13,14 @@ data class FreelancerClass(
     var rating: Float = 0.0f,
     var pastProjects: MutableList<String> = mutableListOf(),
     var ongoingProjects: MutableList<String> = mutableListOf(),
-    var skills: MutableList<String> = mutableListOf(),
+    var careerFields: MutableList<String> = mutableListOf(),
+    var completedGivenProjects: MutableList<String> = mutableListOf(),
+    var ongoingGivenProjects: MutableList<String> = mutableListOf(),
     var reviews: MutableList<String> = mutableListOf(),
     var comments: MutableList<String> = mutableListOf(),
     var country: String,
     var city: String,
+    var defination: String = ""
 )
 data class UserClass(
     var UID : String,
@@ -28,12 +29,8 @@ data class UserClass(
     var imageURL: String,
     var email : String,
     var phoneNumber: String,
-    var education: String,
-    var score: Float = 0.0f,
-    var completedProjects: MutableList<String> = mutableListOf(),
-    var ongoingProjects: MutableList<String> = mutableListOf(),
-    var skills: MutableList<String> = mutableListOf(),
-    var reviews: MutableList<String> = mutableListOf(),
+    var completedGivenProjects: MutableList<String> = mutableListOf(),
+    var ongoingGivenProjects: MutableList<String> = mutableListOf(),
     var country : String,
     var city : String,
 )

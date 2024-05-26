@@ -20,7 +20,6 @@ import com.simurgapp.istebu.View.UIElements.MyTopAppBar
 import com.simurgapp.istebu.ViewModel.BackViewModel
 
 
-
 class MainActivity : ComponentActivity() {
 private lateinit var navController: NavHostController
 

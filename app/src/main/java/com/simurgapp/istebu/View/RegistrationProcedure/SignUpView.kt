@@ -1,4 +1,4 @@
-package com.simurgapp.istebu.View
+package com.simurgapp.istebu.View.RegistrationProcedure
 
 import LoginsigninViewModel
 import androidx.compose.foundation.layout.Arrangement

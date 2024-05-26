@@ -20,11 +20,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,23 +34,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.FreelancerClass
-import com.simurgapp.istebu.Model.UserClass
 import com.simurgapp.istebu.Model.tempData
-import com.simurgapp.istebu.R
 import com.simurgapp.istebu.View.UIElements.CircleImage
+import com.simurgapp.istebu.View.UIElements.CommentsArea
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
-import com.simurgapp.istebu.ui.theme.Orange500
-import com.simurgapp.istebu.ui.theme.darkerOrange
+import com.simurgapp.istebu.View.UIElements.IconButtonOne
+import com.simurgapp.istebu.View.UIElements.PicTextItem
 
 @Composable
-fun ProfileView() {
+fun ProfileView(navController: NavController) {
     var tempData = tempData()
     val imageSize = 200
     val currentUser = FreelancerClass(
@@ -65,7 +63,9 @@ fun ProfileView() {
         rating = 4.5f,
         pastProjects = mutableListOf("Project A", "Project B", "Project C"),
         ongoingProjects = mutableListOf("Project D", "Project E"),
-        skills = mutableListOf("Java", "Kotlin", "Python", "C++"),
+        completedGivenProjects = mutableListOf("Project F", "Project G"),
+        ongoingGivenProjects = mutableListOf("Project H", "Project I"),
+        careerFields = mutableListOf("Java", "Kotlin", "Python", "C++"),
         reviews = mutableListOf("Excellent work!", "Very professional."),
         comments = mutableListOf("Great work!", "Very professional.", "Highly recommend!"),
         country = "Turkey",
@@ -96,10 +96,15 @@ fun ProfileView() {
                 Spacer(modifier = Modifier.width(200.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
-            CommentsSection(comments = currentUser.comments)
+            FilledTonalButton(onClick = { navController.navigate("getFreelancerInfoView") }, text = "Freelancer Olmak İstiyorum")
+
+            Spacer(modifier = Modifier.height(16.dp))
+            FilledTonalButton(onClick = { navController.navigate("getUserInfoView")}, text ="Üyeliği Tamamla" )
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            FilledTonalButton(onClick = { /*TODO*/ }, text = "Freelancer Olmak İstiyorum")
+            CommentsArea(comments = currentUser.comments)
+
 
             Spacer(modifier = Modifier.height(64.dp))
 
@@ -107,6 +112,8 @@ fun ProfileView() {
         }
     }
 }
+
+
 
 @Composable
 fun ProfileImageSection(tempData: tempData, imageSize: Int) {
@@ -143,9 +150,24 @@ fun ProfileInfoSection(currentUser: FreelancerClass) {
 
         Spacer(modifier = Modifier.size(8.dp))
         ProfileInfoItem(label = "Email", value = currentUser.email)
+        Divider(
+            color = Color.Gray.copy(alpha = 0.3f),
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
         ProfileInfoItem(label = "Phone", value = currentUser.phoneNumber)
+        Divider(
+            color = Color.Gray.copy(alpha = 0.3f),
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
         ProfileInfoItem(label = "Education", value = currentUser.education)
-        ProfileInfoItem(label = "Skills", value = currentUser.skills.joinToString(", "))
+        Divider(
+            color = Color.Gray.copy(alpha = 0.3f),
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        ProfileInfoItem(label = "Skills", value = currentUser.careerFields.joinToString(", "))
     }
 }
 
@@ -200,7 +222,11 @@ fun PastProjectsSection(pastProjects: List<String>) {
             .fillMaxWidth()
             .padding(2.dp)
     ) {
-        Text(text = "Past Projects", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Row (horizontalArrangement = Arrangement.SpaceBetween,modifier = Modifier.fillMaxWidth()
+        ){
+            Text(text = "Past Projects", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            IconButtonOne(icon = Icons.Default.ArrowForward, contentDescription = "show all", onClick = { /*TODO*/ })
+        }
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier
@@ -226,24 +252,4 @@ fun PastProjectsSection(pastProjects: List<String>) {
     }
 }
 
-@Composable
-fun CommentsSection(comments: List<String>) {
-    Column(
-        modifier = Modifier
-            .border(1.dp, Color(0xFF006400), RoundedCornerShape(12.dp))
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        Text(text = "Comments", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        comments.forEach { comment ->
-            Text(
-                text = "\"$comment\"",
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
-        }
-    }
-}
+

@@ -1,12 +1,17 @@
 package com.simurgapp.istebu.View.Freelancer
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.FreelancerClass
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.UIElements.GenericListView
 import com.simurgapp.istebu.View.UIElements.PicTextItem
 import com.simurgapp.istebu.ViewModel.BackViewModel
+import kotlin.random.Random.Default.nextInt
 
 
 @Composable
@@ -18,33 +23,22 @@ fun FreelancersScreen(navController: NavController) {
     val backViewModel = BackViewModel()
 
 
-    for (i in 0..94) {
 
 
-
-        try {
-            //freelancerClass.add(FreelancerClass("UID$i", tempData.names[i], "Surname$i", tempData.images.random(), "email$i", "phoneNumber$i", "education$i", 0.0f,tempData.names,tempData.names,tempData.jobs,tempData.jobs , "country$i", "city$i"))
-
-        }catch (
-        e: IndexOutOfBoundsException
-        ){
-            println(e.message)
-        }
-
-
-    }
+Box (modifier = Modifier.padding(bottom = 64.dp)){
     GenericListView(freelancerClass) { item , index->
         println("girdi $index")
         println(item.name)
         println(item.UID)
-
-        println(freelancerClass[index].skills[0])
-        PicTextItem(freelancerClass[index].UID, freelancerClass[index].name,freelancerClass[index].skills[index] , freelancerClass[index].imageURL){
-           // backViewModel.increment()
+        println(freelancerClass[index].careerFields[0])
+        println("devam ediyor $index")
+        PicTextItem(freelancerClass[index].UID, freelancerClass[index].name,freelancerClass[index].careerFields[nextInt(3)] , freelancerClass[index].imageURL){
+            // backViewModel.increment()
             navController.navigate("freelancerDetailScreen/${index}")
-
-
-
         }
+        println("çıktı $index")
     }
+}
+
+
 }

@@ -63,6 +63,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.4.0") // Font Awesome library
 
 
     implementation(libs.androidx.core.ktx)

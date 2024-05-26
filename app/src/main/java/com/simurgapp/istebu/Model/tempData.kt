@@ -1,5 +1,8 @@
 package com.simurgapp.istebu.Model
 
+import java.lang.StrictMath.random
+import kotlin.random.Random.Default.nextInt
+
 class tempData {
     val names = mutableListOf("John", "Jane", "Alice", "Bob", "Charlie", "David", "Emma", "Fiona", "George", "Hannah",
         "Irene", "Jack", "Katherine", "Liam", "Mia", "Noah", "Olivia", "Paul", "Quinn", "Rachel",
@@ -53,15 +56,41 @@ class tempData {
         "Social Media Management",
         "Marketing",
         "Copywriting",
+        "Accountant",
 
 
     )
 
     val freelancerClass : MutableList<FreelancerClass> = mutableListOf()
     fun getFreeLancerClass() : MutableList<FreelancerClass> {
-        for (i in 0..94) {
+        for (i in 0..30) {
+            println("girdi $i")
             try {
-               // freelancerClass.add(FreelancerClass("UID$i", names[i], "Surname$i", images.random(), "email$i", "phoneNumber$i", "education$i", 0.0f,names,names,jobs,jobs , "country$i", "city$i"))
+                freelancerClass.add(FreelancerClass(UID = i.toString(),
+                    name = names[i],
+                    surname = names.random(),
+                    imageURL = images.random(),
+                    dailyPrice = nextInt(100, 1000),
+                    email = "berkyesilduman@gmail.com",
+                    phoneNumber = "0532 123 45 67",
+                    rating = 4.5f,
+                    education = "Akdeniz University",
+                    pastProjects = mutableListOf("Project A", "Project B", "Project C"),
+                    ongoingProjects = mutableListOf("Project D", "Project E"),
+                    careerFields = mutableListOf("Software Developer", "Web Developer", "Mobile Developer"),
+
+                    completedGivenProjects = mutableListOf("Project F", "Project G"),
+                    ongoingGivenProjects = mutableListOf("Project H", "Project I"),
+                    country = "Turkey",
+                    city = "Antalya",
+                    defination = "I am a software developer. I have been working in this field for 5 years. I have completed many projects. I am very professional",
+
+
+                    reviews = mutableListOf("Excellent work!", "Very professional."),
+                    comments = mutableListOf("Great work!", "Very professional.", "Highly recommend!"),
+
+
+                    ))
             }catch (e: IndexOutOfBoundsException) {
                 println(e.message)
             }

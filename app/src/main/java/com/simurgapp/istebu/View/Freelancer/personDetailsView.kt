@@ -29,7 +29,7 @@ fun freelancerDetailsScreen(index: Int) {
                 fontWeight = FontWeight.Bold // Metni kalın yap
 
             )
-            Text(text = freelancer.skills[0])
+            Text(text = freelancer.careerFields[0])
         }
 
     }
