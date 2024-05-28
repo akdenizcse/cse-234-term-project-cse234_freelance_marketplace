@@ -1,5 +1,7 @@
 package com.simurgapp.istebu.Model
 
+import android.icu.util.Currency
+
 
 data class FreelancerClass(
     var UID: String,
@@ -58,5 +60,37 @@ data class JobsClass(
     var completed: Boolean = false,
     var reviews: MutableList<String> = mutableListOf(),
     var score: Float = 0.0f,
-    var isFinished: Boolean
+    var isFinished: Boolean,
 )
+data class ProjectClass(
+    var UID: String,
+    var projectName: String,
+    var clientID: String,
+    var skills: MutableList<String>,
+    var freelancersID: MutableList<String> = mutableListOf(),
+    var description: String,
+    var date: String,
+    var imageURL: MutableList<String> = mutableListOf(),
+    var necessaryBranches: MutableList<String> = mutableListOf(),
+    var numberPeople: Int,
+    var budget: Float,
+    var isFinished: Boolean,
+    var estimatedTime: Int,
+    var projectType: String ,//Fixed or Hourly
+    var experienceLevel: String,
+    var offers: MutableList<OffersClass> = mutableListOf(),
+    var offersPrice: MutableList<Float> = mutableListOf(),
+
+)
+data class OffersClass(
+    var UID: String,
+    var price: Int,
+    var estimatedTime: Int,
+    var projectID: String,
+    var freelancerID: String,
+    var date: String,
+    var isAccepted: Boolean,
+    var isRejected: Boolean,
+    var isFinished: Boolean,
+    var comment: String,
+    )

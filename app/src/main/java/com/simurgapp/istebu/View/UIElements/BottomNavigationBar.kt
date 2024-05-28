@@ -21,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,34 +35,34 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.firestore.admin.v1.Index
 import com.simurgapp.istebu.ui.theme.Orange500
+import kotlinx.coroutines.flow.MutableStateFlow
 
 sealed class BottomNavigationBar(val route: String, val title: String, val icon: ImageVector) {
     data object Profile : BottomNavigationBar("profile", "Profile", Icons.Default.Person)
     data object Messages : BottomNavigationBar("messages", "Messages", Icons.Default.Email)
 
-    data object Jobs : BottomNavigationBar("jobs", "Jobs", Icons.Default.List)
+    data object Jobs : BottomNavigationBar("careerFieldsView/jobs", "Jobs", Icons.Default.List)
 
-    data object Freelancers : BottomNavigationBar("careerFieldsView", "Freelancers", Icons.Default.Face)
+    data object CareerFieldsView : BottomNavigationBar("careerFieldsView/freelancers", "Freelancers", Icons.Default.Face)
 }
 
 @Composable
 fun BottomBar(navController: NavHostController) {
     val items = listOf(
         BottomNavigationBar.Jobs,
-        BottomNavigationBar.Freelancers,
+        BottomNavigationBar.CareerFieldsView,
         BottomNavigationBar.Messages,
         BottomNavigationBar.Profile
-
-
-
     )
-    val navStackBackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navStackBackEntry?.destination
-
+    println(items)
     Row {
         Box (
-            modifier = Modifier.height(60.dp).fillMaxWidth().background(Color.White),
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth()
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ){
             Row(
@@ -67,8 +70,8 @@ fun BottomBar(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                items.forEach { screen ->
-                    AddItem(items = screen, currentDestination =currentDestination , navController = navController )
+                items.forEachIndexed() { index, screen ->
+                    AddItem(items = screen, navController = navController, index = index)
                 }
         }
 
@@ -80,20 +83,22 @@ fun BottomBar(navController: NavHostController) {
 @Composable
 fun AddItem(
     items: BottomNavigationBar,
-    currentDestination: NavDestination?,
-    navController: NavHostController
+    navController: NavHostController,
+    index: Int,
     ) {
-        val selected = currentDestination?.hierarchy?.any { it.route == items.route } == true
+        val selected = mutableStateOf(index == indexG)
+        val background = if (selected.value) Orange500.copy(alpha = 0.6f) else Color.Transparent
 
-        val background =
-            if (selected) Orange500.copy(alpha = 0.6f) else Color.Transparent
-
-        val contentColor =
-            if (selected) Color.White else Color.Black
+        val contentColor = if (selected.value) Color.White else Color.Black
 
         Box(
-            modifier = Modifier.height(40.dp).clip(CircleShape).background(background).clickable(onClick = {
+            modifier = Modifier
+                .height(40.dp)
+                .clip(CircleShape)
+                .background(background)
+                .clickable(onClick = {
                     navController.navigate(items.route) {
+                        indexG = index
                         popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
                     }
@@ -110,7 +115,7 @@ fun AddItem(
                     contentDescription = "icon",
                     tint = contentColor
                 )
-                AnimatedVisibility(visible = selected) {
+                AnimatedVisibility(visible = selected.value) {
                     Text(
                         text = items.title,
                         color = contentColor
@@ -120,5 +125,5 @@ fun AddItem(
         }
     }
 
-
+var indexG by mutableStateOf(1)
 

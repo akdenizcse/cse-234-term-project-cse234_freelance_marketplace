@@ -57,7 +57,7 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
 
 
     if (signInState?.isSuccess == true || isLoggedIn) {
-        navController.navigate("freelancers", builder = {
+        navController.navigate("careerFieldsView/freelancers", builder = {
             popUpTo("login") {
                 inclusive = true
             }

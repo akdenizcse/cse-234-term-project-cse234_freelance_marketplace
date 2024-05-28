@@ -97,6 +97,7 @@ fun ProfileView(navController: NavController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             PastProjectsSection(pastProjects = currentUser.pastProjects)
+            PastProjectsSection(pastProjects = currentUser.ongoingProjects, "Ongoing Projects")
             Spacer(modifier = Modifier.height(16.dp))
             RatingSection(rating = currentUser.rating)
             Spacer(modifier = Modifier.height(16.dp))
@@ -239,7 +240,7 @@ fun RatingSection(rating: Float) {
     }
 }
 @Composable
-fun PastProjectsSection(pastProjects: List<String>) {
+fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Projects") {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -249,7 +250,7 @@ fun PastProjectsSection(pastProjects: List<String>) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Past Projects", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold)
             IconButton(
                 onClick = { /*TODO*/ },
                 modifier = Modifier.size(24.dp)

@@ -17,12 +17,13 @@ import com.simurgapp.istebu.View.UIElements.PicTextItem
 @Composable
 
 
-fun CareerFieldsView(navController: NavController) {
+fun CareerFieldsView(navController: NavController ,goTo : String) {
+    println(goTo)
     Box (modifier = Modifier.padding(bottom = 64.dp)){
         GenericListView(list = tempData().careerFields) { item , index->
 
             PicTextItem(sire = index.toString(), title = item[0], subtitle = "", imageUrl = item[1]){
-                navController.navigate("fieldsDetailsView/${index}")
+                navController.navigate("fieldsDetailsView/${index}/$goTo")
             }
 
         }
