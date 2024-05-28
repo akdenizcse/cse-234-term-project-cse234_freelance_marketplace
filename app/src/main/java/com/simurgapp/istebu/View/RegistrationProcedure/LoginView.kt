@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
+import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.View.UIElements.TextFieldOne
 import com.simurgapp.istebu.ViewModel.BackViewModel
@@ -53,10 +54,14 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
     val viewModel = LoginsigninViewModel(sharedPreferencesHelper)
     val signInState by viewModel.signInState.collectAsState()
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
+    var firstSign = remember {
+        mutableStateOf(true)
+    }
 
 
 
-    if (signInState?.isSuccess == true || isLoggedIn) {
+    if ( isLoggedIn && firstSign.value) {
+        firstSign.value = false
         navController.navigate("careerFieldsView/freelancers", builder = {
             popUpTo("login") {
                 inclusive = true
@@ -71,8 +76,7 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
         TextFieldOne("Email", Icons.Default.Email, Orange200, Orange500, emailText)
         Spacer(modifier = Modifier.padding(8.dp))
         TextFieldOne("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
-        Text(text = emailText.value)
-        Text(text = passwordText.value)
+        Spacer(modifier = Modifier.height(48.dp))
 
         FilledTonalButton(onClick = {
 
@@ -88,8 +92,11 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
 
 
             }
+            
 
         }, text = "Sign up" )
+        Spacer(modifier = Modifier.height(16.dp))
+        CircleImage(imageUrl = "https://banner2.cleanpng.com/20180413/rfe/kisspng-google-logo-google-cloud-platform-gboard-google-pa-4-5ad0e95b57ec99.9189954815236406673602.jpg")
 
     }
 }

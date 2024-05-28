@@ -26,6 +26,7 @@ import com.simurgapp.istebu.View.Profile.ProfileInfoItem
 import com.simurgapp.istebu.View.Profile.RatingSection
 import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.CommentsArea
+import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 
 @Composable
 fun freelancerDetailsScreen(index: Int) {
@@ -60,6 +61,7 @@ fun freelancerDetailsScreen(index: Int) {
 
 
                 RatingSection(rating =freelancer.rating)
+                FilledTonalButton(onClick = { /*TODO*/ }, text = "Send Message")
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
 
             Column {

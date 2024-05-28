@@ -30,7 +30,7 @@ fun MessagesDetail()  {
     var messages = remember { mutableStateOf(listOf<String>()) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        PicTextItem(sire = "", title = "Ali Berk", subtitle ="" , imageUrl =tempData().images.random() ) {
+        PicTextItem(sire = "", title = "Zehra Bozkurt", subtitle ="" , imageUrl =tempData().images.random() ) {
 
         }
        LazyColumn(

@@ -18,6 +18,7 @@ import com.simurgapp.istebu.View.RegistrationProcedure.SignUpScreen
 import com.simurgapp.istebu.View.Freelancer.freelancerDetailsScreen
 import com.simurgapp.istebu.View.Jobs.OffersView
 import com.simurgapp.istebu.View.Jobs.ProjectView
+import com.simurgapp.istebu.View.Jobs.paymentPage
 import com.simurgapp.istebu.View.Messages.MessagesDetail
 import com.simurgapp.istebu.View.RegistrationProcedure.GetFreelancerInfoView
 import com.simurgapp.istebu.View.RegistrationProcedure.GetUserInfoView
@@ -60,7 +61,8 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
 
         }
         composable("projectView") { ProjectView(navController) }
-        composable("offersView") { OffersView() }
+        composable("offersView") { OffersView(navController) }
         composable("messageDetail"){ MessagesDetail() }
+        composable("paymentPage") { paymentPage() }
     }
 }

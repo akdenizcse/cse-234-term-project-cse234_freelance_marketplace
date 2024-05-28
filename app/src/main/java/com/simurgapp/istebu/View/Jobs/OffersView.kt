@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.OffersClass
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.Profile.ProfileImageSection
@@ -44,7 +45,7 @@ data class OffersClass(
  */
 
 @Composable
-fun OffersView() {
+fun OffersView(navController: NavController) {
     var tempData = tempData()
     val imageSize = 200
     var offers = OffersClass(
@@ -88,7 +89,7 @@ fun OffersView() {
             }
             Text(text = "Comment" , fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
             Text(text = offers.comment)
-            FilledTonalButton(onClick = {  }, text = "Accept Offer")
+            FilledTonalButton(onClick = { navController.navigate("paymentPage") }, text = "Accept Offer")
 
 
 
