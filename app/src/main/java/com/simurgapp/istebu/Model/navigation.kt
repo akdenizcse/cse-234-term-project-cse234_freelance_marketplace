@@ -12,7 +12,7 @@ import com.simurgapp.istebu.View.Freelancer.FreelancersScreen
 import com.simurgapp.istebu.View.Jobs.JobsScreen
 import com.simurgapp.istebu.View.RegistrationProcedure.LoginScreen
 import com.simurgapp.istebu.View.MainScreen
-import com.simurgapp.istebu.View.MessagesScreen
+import com.simurgapp.istebu.View.Messages.MessagesScreen
 import com.simurgapp.istebu.View.Profile.ProfileView
 import com.simurgapp.istebu.View.RegistrationProcedure.SignUpScreen
 import com.simurgapp.istebu.View.Freelancer.freelancerDetailsScreen
