@@ -1,6 +1,7 @@
 package com.simurgapp.istebu.View.Messages
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.IconButtonOne
@@ -31,7 +33,7 @@ import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.darkerOrange
 
 @Composable
-fun MessagesScreen() {
+fun MessagesScreen(navController: NavController) {
     val tempData = tempData()
     var text =  remember {
         mutableStateOf("")
@@ -49,12 +51,13 @@ fun MessagesScreen() {
         Spacer(modifier = Modifier.padding(16.dp))
 
         for (i in 0..10) {
-            Messageİtem(
+            MessageItem(
                 imageURL = tempData.getFreeLancerClass()[i].imageURL,
                 message = "Hello, I am interested",
                 name = tempData.getFreeLancerClass()[i].name,
                 surname = tempData.getFreeLancerClass()[i].surname,
-                date = "2024-05-01"
+                date = "2024-05-01",
+                navController = navController
             )
         }
         Spacer(modifier = Modifier.height(64.dp))
@@ -62,12 +65,13 @@ fun MessagesScreen() {
 }
 
 @Composable
-fun Messageİtem(imageURL : String, message : String ,name: String , surname: String , date: String){
+fun MessageItem(imageURL : String, message : String ,name: String , surname: String , date: String,navController: NavController){
 
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .border(1.dp, color = androidx.compose.ui.graphics.Color.Gray)
+            .clickable { navController.navigate("messageDetail") }
             .padding(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
