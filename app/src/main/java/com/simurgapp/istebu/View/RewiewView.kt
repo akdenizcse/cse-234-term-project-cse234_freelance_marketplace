@@ -1,5 +1,6 @@
 package com.simurgapp.istebu.View
 
+import android.widget.RatingBar
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -15,10 +16,14 @@ import androidx.compose.ui.unit.sp
 import com.simurgapp.istebu.View.UIElements.TextFieldOne
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.darkerOrange
+import com.simurgapp.istebu.ui.theme.starsYellow
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import com.simurgapp.istebu.ui.theme.IsteBuTheme
 
 
@@ -39,9 +44,13 @@ fun ReviewScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Giving your opinions and rating about the order and the freelancer is very valuable for the Bionluk Freelancer community..", fontSize = 14.sp)
-
+        StarsBar(rating = communicationRating, starCount = 5, starSize = 32f, starColor = starsYellow, emptyStarColor = Color.Gray)
         RatingBar("Communication", communicationRating) { communicationRating = it }
+        StarsBar(rating = serviceQualityRating, starCount = 5, starSize = 32f, starColor = starsYellow, emptyStarColor = Color.Gray)
+
         RatingBar("Service Quality", serviceQualityRating) { serviceQualityRating = it }
+        StarsBar(rating = timingRating, starCount = 5, starSize = 32f, starColor = starsYellow, emptyStarColor = Color.Gray)
+
         RatingBar("Timing", timingRating) { timingRating = it }
 
 
@@ -80,6 +89,64 @@ fun RatingBar(label: String, rating: Float, onRatingChanged: (Float) -> Unit) {
         )
         Text(rating.toString())
     }
+}
+@Composable
+fun drawStar(starSize: Float , color: Color , i : Int  ,full : Int , partial : Float ) {
+    val starPath = Path().apply {
+        moveTo(0.5f, 0.0f)
+        lineTo(0.61f, 0.35f)
+        lineTo(0.98f, 0.35f)
+        lineTo(0.68f, 0.57f)
+        lineTo(0.79f, 0.91f)
+        lineTo(0.5f, 0.70f)
+        lineTo(0.21f, 0.91f)
+        lineTo(0.32f, 0.57f)
+        lineTo(0.02f, 0.35f)
+        lineTo(0.39f, 0.35f)
+        close()
+    }
+    Canvas(modifier = Modifier
+        .width(50.dp)
+        .height(50.dp)
+        .padding(16.dp)) {
+        drawPath(
+            path = starPath, color = color, style = Stroke(width = starSize)
+
+
+        )
+        if (i == full && partial > 0) {
+            clipRect(right = size.width * partial) {
+                drawPath(
+                    path = starPath,
+                    color = color,
+                    style = Stroke(width = 5f)
+                )
+            }
+        }
+    }
+}
+@Composable
+fun StarsBar(
+    rating: Float,
+    modifier: Modifier = Modifier,
+    starCount: Int = 5,
+    starSize: Float = 48f,
+    starColor: Color = starsYellow,
+    emptyStarColor: Color = Color.Gray) {
+    val full = rating.toInt()
+    val partial = rating - full
+
+    Row {
+        for (i in 0 until starCount) {
+            drawStar(starSize, if (i < full) starColor else emptyStarColor, i, full, partial)
+            Spacer(modifier = Modifier.width(8.dp))
+
+        }
+
+
+    }
+
+
 }
 
 
