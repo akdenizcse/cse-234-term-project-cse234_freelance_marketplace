@@ -22,6 +22,7 @@ import com.simurgapp.istebu.View.Jobs.paymentPage
 import com.simurgapp.istebu.View.Messages.MessagesDetail
 import com.simurgapp.istebu.View.RegistrationProcedure.GetFreelancerInfoView
 import com.simurgapp.istebu.View.RegistrationProcedure.GetUserInfoView
+import com.simurgapp.istebu.View.ReviewScreen
 import com.simurgapp.istebu.ViewModel.BackViewModel
 
 
@@ -45,7 +46,7 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
             )
         ) { backStackEntry ->
             val myInt = backStackEntry.arguments?.getInt("UID") ?: 0
-            freelancerDetailsScreen(myInt)
+            freelancerDetailsScreen(myInt, navController)
         }
         composable("getFreelancerInfoView") { GetFreelancerInfoView() }
         composable("getUserInfoView") { GetUserInfoView() }
@@ -64,5 +65,6 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
         composable("offersView") { OffersView(navController) }
         composable("messageDetail"){ MessagesDetail() }
         composable("paymentPage") { paymentPage() }
+        composable("reviewScreen") { ReviewScreen() }
     }
 }

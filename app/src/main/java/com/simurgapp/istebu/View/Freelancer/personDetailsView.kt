@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.Profile.PastProjectsSection
 import com.simurgapp.istebu.View.Profile.ProfileInfoItem
@@ -29,7 +30,7 @@ import com.simurgapp.istebu.View.UIElements.CommentsArea
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 
 @Composable
-fun freelancerDetailsScreen(index: Int) {
+fun freelancerDetailsScreen(index: Int, navController: NavController) {
     val tempData = tempData()
     val freelancer = tempData.getFreeLancerClass()[index]
 
@@ -61,7 +62,11 @@ fun freelancerDetailsScreen(index: Int) {
 
 
                 RatingSection(rating =freelancer.rating)
-                FilledTonalButton(onClick = { /*TODO*/ }, text = "Send Message")
+               Column {
+                    FilledTonalButton(onClick = { navController.navigate("reviewScreen") }, text = "Rewiew")
+                   Text(text = "!! iş bittiğinde görünecek")
+                }
+            FilledTonalButton(onClick = { /*TODO*/ }, text = "Send Message")
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
 
             Column {
