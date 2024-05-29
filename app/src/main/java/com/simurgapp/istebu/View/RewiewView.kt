@@ -1,22 +1,25 @@
 package com.simurgapp.istebu.View
 
-import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simurgapp.istebu.View.UIElements.TextFieldOne
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.darkerOrange
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.graphics.drawscope.Stroke
+import com.simurgapp.istebu.ui.theme.IsteBuTheme
 
 
 @Composable
@@ -30,7 +33,8 @@ fun ReviewScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -39,6 +43,7 @@ fun ReviewScreen() {
         RatingBar("Communication", communicationRating) { communicationRating = it }
         RatingBar("Service Quality", serviceQualityRating) { serviceQualityRating = it }
         RatingBar("Timing", timingRating) { timingRating = it }
+
 
         TextFieldOne(labelText = "Comment", leadingIconOne = Icons.Default.Comment, colorOne = Orange200, colorTwo = darkerOrange, text = comment )
 
@@ -56,6 +61,7 @@ fun ReviewScreen() {
         }
 
         com.simurgapp.istebu.View.UIElements.FilledTonalButton(onClick = { /*TODO*/ }, text = "Submit Rewiew" )
+        Spacer(modifier = Modifier.height(64.dp))
     }
 }
 
@@ -76,8 +82,5 @@ fun RatingBar(label: String, rating: Float, onRatingChanged: (Float) -> Unit) {
     }
 }
 
-@Preview
-@Composable
-fun ReviewScreenPreview() {
-    ReviewScreen()
-}
+
+
