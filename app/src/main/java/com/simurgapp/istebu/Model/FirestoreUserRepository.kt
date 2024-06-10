@@ -3,6 +3,7 @@ package com.simurgapp.istebu.Model
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.firestore
 
 class FirestoreUserRepository {
@@ -15,8 +16,6 @@ class FirestoreUserRepository {
             phoneNumber: String , education: String , careerFields: MutableList<String>, definition: String , imageURL: String  = "", dailyPrice: Int ){
         val freelancer = hashMapOf(
             "name" to name,
-
-
             "UID" to UID,
             "surname" to surname,
             "country" to country,
@@ -49,7 +48,20 @@ class FirestoreUserRepository {
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
     }
-
+    fun getFreelancerByUID(UID: String, onSuccess: (DocumentSnapshot) -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("Freelancers").document(UID).get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    onSuccess(document)
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
 
 
 }
