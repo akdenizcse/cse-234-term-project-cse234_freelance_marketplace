@@ -84,7 +84,7 @@ class tempData {
                     city = "Antalya",
                     defination = "I am a software developer. I have been working in this field for 5 years. I have completed many projects. I am very professional",
 
-
+                    job = jobs.random(),
                     reviews = mutableListOf("Excellent work!", "Very professional."),
                     comments = mutableListOf("Great work!", "Very professional.", "Highly recommend!"),
 
