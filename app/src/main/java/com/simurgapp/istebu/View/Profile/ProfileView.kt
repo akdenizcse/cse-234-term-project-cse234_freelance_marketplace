@@ -70,7 +70,9 @@ fun ProfileView(navController: NavController) {
         reviews = mutableListOf("Excellent work!", "Very professional."),
         comments = mutableListOf("Great work!", "Very professional.", "Highly recommend!"),
         country = "Turkey",
-        city = "Istanbul"
+        job = "Software Developer",
+        city = "Istanbul",
+
     )
 
     Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.TopCenter) {
