@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simurgapp.istebu.Model.AuthRepository
 import com.simurgapp.istebu.Model.FirebaseAuthUser
+import com.simurgapp.istebu.Model.FirestoreUserRepository
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,7 @@ class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreference
 
     private val _isLoggedIn = MutableStateFlow<Boolean>(false)
     val isLoggedIn : StateFlow<Boolean> get() = _isLoggedIn
-
+    val firebaseModel = FirestoreUserRepository()
 
 
 
@@ -82,4 +83,18 @@ class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreference
         _isLoggedIn.value = logged
     }
 
+    fun addFreelancer(name: String , surname: String , country: String , city: String , email: String ,
+                      phoneNumber: String , education: String , careerFields: MutableList<String>, definition: String , imageURL: String  = "", dailyPrice: Int ){
+        viewModelScope.launch {
+            firebaseModel.addFreelancer(education, careerFields, definition, imageURL, dailyPrice)
+        }
+        fun addUser(name: String , surname: String , country: String , city: String , email: String ,
+                    phoneNumber: String , job: String, UID: String){
+            viewModelScope.launch {
+                firebaseModel.addUserBYUID(UID,name, surname, country, city, email, phoneNumber, job)
+            }
+        }
+    }
+
 }
+
