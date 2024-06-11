@@ -1,5 +1,6 @@
 package com.simurgapp.istebu.View.Profile
 
+import LoginsigninViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -30,11 +31,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.FreelancerClass
+import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.CommentsArea
@@ -50,8 +56,15 @@ import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 
 @Composable
 fun ProfileView(navController: NavController) {
+    val context = LocalContext.current
+    val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
+    val loginViewModel = LoginsigninViewModel(sharedPreferencesHelper)
     var tempData = tempData()
     val imageSize = 200
+
+    val isUserCreated by loginViewModel.isUserCreated.collectAsState()
+    val isFreelancerCreated by loginViewModel.isFreelancerCreated.collectAsState()
+
     val currentUser = FreelancerClass(
         UID = "1",
         name = "Ali Berk",
@@ -73,7 +86,7 @@ fun ProfileView(navController: NavController) {
         job = "Software Developer",
         city = "Istanbul",
 
-    )
+        )
 
     Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.TopCenter) {
         Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,7 +99,7 @@ fun ProfileView(navController: NavController) {
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    //.border(2.dp, Color(0xFF006400), RoundedCornerShape(12.dp))
+                //.border(2.dp, Color(0xFF006400), RoundedCornerShape(12.dp))
 
             )
             Text(
@@ -108,14 +121,31 @@ fun ProfileView(navController: NavController) {
                 Spacer(modifier = Modifier.width(200.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
+            if (!isFreelancerCreated) {
 
-            FilledTonalButton(onClick = { navController.navigate("getFreelancerInfoView") }, text = "Freelancer Olmak İstiyorum")
+                FilledTonalButton(
+                    onClick = {
+                        if(isUserCreated) {
+                            navController.navigate("getFreelancerInfoView")
+                        } else {
+                            navController.navigate("getUserInfoView")
+                        }
+                    },
+                    text = "Freelancer Olmak İstiyorum"
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
-            FilledTonalButton(onClick = { navController.navigate("getUserInfoView")}, text ="Üyeliği Tamamla" )
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            if (!isUserCreated) {
+                FilledTonalButton(
+                    onClick = { navController.navigate("getUserInfoView") },
+                    text = "Üyeliği Tamamla"
+                )
+                Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
 
             CommentsArea(comments = currentUser.comments)
 
@@ -138,7 +168,7 @@ fun ProfileImageSection(tempData: tempData, imageSize: Int) {
             modifier = Modifier
                 .size(imageSize.dp)
                 .clip(CircleShape)
-                //.shadow(2.5.dp, CircleShape)
+            //.shadow(2.5.dp, CircleShape)
         )
         IconButton(
             onClick = {
@@ -254,7 +284,7 @@ fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Proje
         ) {
             Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold)
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { /TODO/ },
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Show all")

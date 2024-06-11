@@ -1,5 +1,6 @@
 package com.simurgapp.istebu.View.RegistrationProcedure
 
+import LoginsigninViewModel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,21 +26,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.View.UIElements.TextFieldOne
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.darkerOrange
 
 @Composable
-fun GetUserInfoView() {
+fun GetUserInfoView(navController: NavController,cameFreelancer : Boolean ) {
     val name = remember { mutableStateOf("") }
     val surname = remember { mutableStateOf("") }
     val country = remember { mutableStateOf("") }
     val city = remember { mutableStateOf("") }
     val phoneNumber = remember { mutableStateOf("") }
     val job = remember { mutableStateOf("") }
+    val context = LocalContext.current
 
+    val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
+    val viewModel = LoginsigninViewModel(sharedPreferencesHelper)
 
 
     Box(
@@ -66,7 +73,17 @@ fun GetUserInfoView() {
             Spacer(modifier = Modifier.height(16.dp))
             TextFieldOne(labelText = "Job", leadingIconOne = Icons.Default.Work, colorOne = Orange200 , colorTwo = darkerOrange , text = job )
             Spacer(modifier = Modifier.height(16.dp))
-            FilledTonalButton(onClick = { /*TODO*/ }, text =    "Save")
+            FilledTonalButton(onClick = {
+                viewModel.addUser(name.value,surname.value,country.value,city.value ,phoneNumber.value,job.value)
+                if (cameFreelancer){
+                    navController.navigate("getFreelancerInfoView")
+                }
+                else{
+                    navController.popBackStack()
+                }
+
+
+            }, text =    "Save")
             Spacer(modifier = Modifier.height(64.dp))
         }
     }

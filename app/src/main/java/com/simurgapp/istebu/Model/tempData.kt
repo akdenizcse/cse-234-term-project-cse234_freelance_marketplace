@@ -38,7 +38,7 @@ class tempData {
         "https://korben.info/app/uploads/2022/11/Manu23_Space_dog_b9d89ef4-c665-4ee7-a22d-a185775c3d11.webp",
         "https://phototrend.fr/wp-content/uploads/2022/05/a-photo-of-a-raccoon-wearing-an-astronaut-helmet.jpeg",
         "https://www.justgeek.fr/wp-content/uploads/2022/12/exemple-image-midjourney.webp",
-        )
+    )
     val careerFields = mutableListOf(mutableListOf("Graphic Design", "https://niecollege.ac.ke/wp-content/uploads/2024/01/graphic-design.jpg","Logo Design", "Brand Identity", "Print Design", "Digital Design", "Typography", "Packaging Design", "Motion Graphics", "Other"),
         mutableListOf("Programming", "https://cdn.sanity.io/images/tlr8oxjg/production/1ca7b34a8d5308a03ae186dfe72caabce0327fe2-1456x816.png?w=3840&q=100&fit=clip&auto=format","Web Development", "Mobile Development", "Game Development", "Data Science", "Machine Learning", "Artificial Intelligence", "Database Development", "Blockchain Development", "Cloud Computing", "Full Stack Development", "Software Development", "DevOps", "Cybersecurity", "Other"),
         mutableListOf("Teaching", "https://d138zd1ktt9iqe.cloudfront.net/media/seo_landing_files/file-teaching-skills-1605625101.jpg","Mathematics", "Physics", "Chemistry", "Biology", "Geography", "History", "Economics", "Business", "Marketing", "Management", "Finance", "Accounting", "Other"),

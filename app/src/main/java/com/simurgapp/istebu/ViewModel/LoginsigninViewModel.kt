@@ -1,5 +1,7 @@
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreferencesHelper) : ViewModel() {
+class LoginsigninViewModel(val sharedPreferencesHelper: SharedPreferencesHelper) : ViewModel() {
     val model = AuthRepository()
 
     private val _signInState = MutableStateFlow<Result<FirebaseAuthUser>?>(null)
@@ -20,12 +22,16 @@ class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreference
     private val _signUpState = MutableStateFlow<Result<FirebaseAuthUser>?>(null)
     val signUpState: StateFlow<Result<FirebaseAuthUser>?> get() = _signUpState
     val errorState = mutableStateOf<String?>(null)
-    val UID = mutableStateOf<String?>(null)
+    private val UID = mutableStateOf<String?>(null)
+    val email = mutableStateOf<String?>(null)
 
     private val _isLoggedIn = MutableStateFlow<Boolean>(false)
     val isLoggedIn : StateFlow<Boolean> get() = _isLoggedIn
     val firebaseModel = FirestoreUserRepository()
-
+    private  val _isUserCreated = MutableStateFlow<Boolean>(sharedPreferencesHelper.isUserCreated())
+    val isUserCreated : StateFlow<Boolean> get() = _isUserCreated
+    private val _isFreelancerCreated = MutableStateFlow<Boolean>(sharedPreferencesHelper.isFreelancerCreated())
+    val isFreelancerCreated : StateFlow<Boolean> get() = _isFreelancerCreated
 
 
     private val _password = MutableStateFlow("")
@@ -33,6 +39,8 @@ class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreference
     init {
         UID.value = sharedPreferencesHelper.getUID()
         updateIsLoggedIn(sharedPreferencesHelper.isLoggedIn())
+        email.value = sharedPreferencesHelper.getEmail()
+
         println("veri çekildi : ${sharedPreferencesHelper.getUID()}")
         println("veri çekildi : ${sharedPreferencesHelper.isLoggedIn()}")
     }
@@ -46,6 +54,7 @@ class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreference
                     UID.value = res.getOrNull()?.uid
                     sharedPreferencesHelper.saveUID(res.getOrNull()?.uid!!)
                     sharedPreferencesHelper.saveLoginState(true)
+                    sharedPreferencesHelper.saveEmail(email)
                     updateIsLoggedIn(true)
 
                 } else {
@@ -67,6 +76,7 @@ class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreference
                     UID.value = res.getOrNull()?.uid
                     sharedPreferencesHelper.saveUID(UID.value!!)
                     sharedPreferencesHelper.saveLoginState(true)
+                    sharedPreferencesHelper.saveEmail(email)
                     updateIsLoggedIn(true)
                 } else {
                     errorState.value = res.exceptionOrNull()?.message
@@ -83,18 +93,26 @@ class LoginsigninViewModel(private val sharedPreferencesHelper: SharedPreference
         _isLoggedIn.value = logged
     }
 
-    fun addFreelancer(name: String , surname: String , country: String , city: String , email: String ,
-                      phoneNumber: String , education: String , careerFields: MutableList<String>, definition: String , imageURL: String  = "", dailyPrice: Int ){
+    fun addFreelancer( education: String , careerFields: MutableList<String>, definition: String , dailyPrice: Int ){
         viewModelScope.launch {
-            firebaseModel.addFreelancer(education, careerFields, definition, imageURL, dailyPrice)
-        }
-        fun addUser(name: String , surname: String , country: String , city: String , email: String ,
-                    phoneNumber: String , job: String, UID: String){
-            viewModelScope.launch {
-                firebaseModel.addUserBYUID(UID,name, surname, country, city, email, phoneNumber, job)
+            firebaseModel.addFreelancer(UID.value!!,education, careerFields, definition,  dailyPrice){
+                sharedPreferencesHelper.saveFreelancerCreated(true)
+                _isFreelancerCreated.value = true
+                Log.d(TAG, "Freelancer successfully added!")
             }
+
+        }
+    }
+    fun addUser(name: String , surname: String , country: String , city: String  ,
+                phoneNumber: String , job: String){
+        viewModelScope.launch {
+            firebaseModel.addUserBYUID(UID.value!!,name, surname, country, city, email.value!!, phoneNumber, job,onSuccess = {
+                sharedPreferencesHelper.saveUserCreated(true)
+                _isUserCreated.value = true
+                Log.d(TAG, "User successfully added!")
+            },)
         }
     }
 
-}
 
+}

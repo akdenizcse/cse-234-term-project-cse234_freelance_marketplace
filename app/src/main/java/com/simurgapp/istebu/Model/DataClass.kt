@@ -83,7 +83,7 @@ data class ProjectClass(
     var offers: MutableList<OffersClass> = mutableListOf(),
     var offersPrice: MutableList<Float> = mutableListOf(),
 
-)
+    )
 data class OffersClass(
     var UID: String,
     var price: Int,
@@ -95,4 +95,4 @@ data class OffersClass(
     var isRejected: Boolean,
     var isFinished: Boolean,
     var comment: String,
-    )
+)

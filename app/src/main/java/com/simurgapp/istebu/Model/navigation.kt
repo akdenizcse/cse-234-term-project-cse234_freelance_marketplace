@@ -48,13 +48,15 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
             val myInt = backStackEntry.arguments?.getInt("UID") ?: 0
             freelancerDetailsScreen(myInt, navController)
         }
-        composable("getFreelancerInfoView") { GetFreelancerInfoView() }
-        composable("getUserInfoView") { GetUserInfoView() }
+        composable("getFreelancerInfoView") { GetFreelancerInfoView(navController) }
+        composable("getUserInfoView/{cameF}", arguments = listOf(navArgument("cameF"){type = NavType.BoolType})) { backStackEntry ->
+            val cameF = backStackEntry.arguments?.getBoolean("cameF") ?: false
+            GetUserInfoView(navController,cameF) }
         composable("careerFieldsView/{goTo}", arguments = listOf(navArgument("goTo") {type = NavType.StringType})){ backStackEntry ->
             val goTo = backStackEntry.arguments?.getString("goTo") ?: ""
             CareerFieldsView(navController,goTo)}
         composable("fieldsDetailsView/{index}/{goTo}", arguments = listOf(navArgument("index"){type = NavType.IntType}
-        ,navArgument("goTo"){type = NavType.StringType}
+            ,navArgument("goTo"){type = NavType.StringType}
         )){ backStackEntry ->
             val index = backStackEntry.arguments?.getInt("index") ?: 0
             val goTo = backStackEntry.arguments?.getString("goTo") ?: ""
