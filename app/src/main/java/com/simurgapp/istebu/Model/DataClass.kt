@@ -4,15 +4,15 @@ import android.icu.util.Currency
 
 
 data class FreelancerClass(
-    var UID: String,
-    var name: String,
-    var surname: String,
-    var imageURL: String,
-    var dailyPrice: Int,
-    var email: String,
-    var job: String,
-    var phoneNumber: String,
-    var education: String,
+    var UID: String = "",
+    var name: String = "",
+    var surname: String = "",
+    var imageURL: String = "",
+    var dailyPrice: Int = 0,
+    var email: String = "",
+    var job: String = "",
+    var phoneNumber: String = "",
+    var education: String = "",
     var rating: Float = 0.0f,
     var pastProjects: MutableList<String> = mutableListOf(),
     var ongoingProjects: MutableList<String> = mutableListOf(),
@@ -21,9 +21,10 @@ data class FreelancerClass(
     var ongoingGivenProjects: MutableList<String> = mutableListOf(),
     var reviews: MutableList<String> = mutableListOf(),
     var comments: MutableList<String> = mutableListOf(),
-    var country: String,
-    var city: String,
-    var defination: String = ""
+    var country: String = "",
+    var city: String = "",
+    var defination: String = "",
+    var subBranches: MutableList<String> = mutableListOf(),
 )
 data class UserClass(
     var UID : String,
