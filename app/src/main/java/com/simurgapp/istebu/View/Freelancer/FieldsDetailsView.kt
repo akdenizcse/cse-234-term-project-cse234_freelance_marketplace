@@ -12,7 +12,10 @@ fun FieldsDetailsView(index : Int,navController: NavController,goTo : String) {
     var list = tempData().careerFields[index].subList(2, tempData().careerFields[index].size)
     GenericListView(list = list) { item , index->
         PicTextItem(sire = "i", title = item, subtitle ="" , imageUrl = tempData().images.random()){
-            navController.navigate(goTo)
+            val route = "${goTo}/$item"
+            println("route : $route girdiiiiiiiiiiiiii")
+            println(item)
+            navController.navigate("${route}")
 
         }
 

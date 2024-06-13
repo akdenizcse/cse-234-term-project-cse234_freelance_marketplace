@@ -40,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
+import com.simurgapp.istebu.Model.tempData
 
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.View.UIElements.SelectableDropDown
@@ -50,6 +51,12 @@ fun GetFreelancerInfoView(navController: NavController) {
     val dailyPrice = remember { mutableStateOf("") }
     val education = remember { mutableStateOf("") }
     val definition = remember { mutableStateOf("") }
+    var subBranches = remember {
+        mutableStateListOf<String>()
+
+    }
+    val tempData = tempData()
+    val cameF = true
     val careerFields = listOf(
         "Graphic Design",
         "Programming",
@@ -66,12 +73,14 @@ fun GetFreelancerInfoView(navController: NavController) {
         "Animation",
         "Social Media Management",
         "Marketing",
-        "Copywriting"
-    ).sorted()
+        "Copywriting",
+        "Accountant"
+    )
 
     val selectedFields = remember { mutableStateListOf<String>() }
     val context = LocalContext.current
     val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
+    val selectedSubBranch = remember { mutableStateListOf<String>() }
     val viewModel = LoginsigninViewModel(sharedPreferencesHelper)
 
 
@@ -123,11 +132,13 @@ fun GetFreelancerInfoView(navController: NavController) {
             SelectableDropDown(
                 careerFields = careerFields,
                 selectedIndices = selectedFields,
+                text = "Career Fields",
                 onItemSelected = { index ->
                     if (selectedFields.contains(careerFields[index])) {
                         selectedFields.remove(careerFields[index])
                     } else {
                         selectedFields.add(careerFields[index])
+                        subBranches += tempData.careerFields[index].subList(2, tempData().careerFields[index].size)
                     }
                 }
             )
@@ -136,11 +147,34 @@ fun GetFreelancerInfoView(navController: NavController) {
                 str.length
             }) { field ->
                 selectedFields.remove(field)
+                careerFields.indexOf(field).let {
+                    subBranches.removeAll(tempData.careerFields[it].subList(2, tempData().careerFields[it].size))
+                    selectedSubBranch.removeAll(tempData.careerFields[it].subList(2, tempData().careerFields[it].size))
+                }
+
             }
+            Spacer(modifier =Modifier.height(16.dp))
+            SelectableDropDown(careerFields = subBranches , selectedIndices = selectedSubBranch,"Sub Branch") { index ->
+                if (selectedSubBranch.contains(subBranches[index])) {
+                    selectedSubBranch.remove(subBranches[index])
+                } else {
+                    selectedSubBranch.add(subBranches[index])
+                }
+            }
+            Spacer(modifier =Modifier.height(16.dp))
+
+            SelectedFieldsView(selectedFields = selectedSubBranch.sortedBy { str ->
+                str.length
+            }){ field ->
+                selectedSubBranch.remove(field)
+
+            }
+
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            FilledTonalButton(onClick = { viewModel.addFreelancer(education.value,selectedFields,definition.value ,dailyPrice.value.toInt())
+            FilledTonalButton(onClick = { viewModel.addFreelancer(education.value,selectedFields,definition.value ,dailyPrice.value.toInt() ,selectedSubBranch)
                 navController.popBackStack()}, text = "Save")
 
             Spacer(modifier = Modifier.height(64.dp))

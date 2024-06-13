@@ -93,9 +93,9 @@ class LoginsigninViewModel(val sharedPreferencesHelper: SharedPreferencesHelper)
         _isLoggedIn.value = logged
     }
 
-    fun addFreelancer( education: String , careerFields: MutableList<String>, definition: String , dailyPrice: Int ){
+    fun addFreelancer( education: String , careerFields: MutableList<String>, definition: String , dailyPrice: Int , subBranches: MutableList<String>){
         viewModelScope.launch {
-            firebaseModel.addFreelancer(UID.value!!,education, careerFields, definition,  dailyPrice){
+            firebaseModel.addFreelancer(UID.value!!,education, careerFields,subBranches,definition,  dailyPrice ){
                 sharedPreferencesHelper.saveFreelancerCreated(true)
                 _isFreelancerCreated.value = true
                 Log.d(TAG, "Freelancer successfully added!")

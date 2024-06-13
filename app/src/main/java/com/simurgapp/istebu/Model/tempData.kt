@@ -40,9 +40,11 @@ class tempData {
         "https://www.justgeek.fr/wp-content/uploads/2022/12/exemple-image-midjourney.webp",
     )
     val careerFields = mutableListOf(mutableListOf("Graphic Design", "https://niecollege.ac.ke/wp-content/uploads/2024/01/graphic-design.jpg","Logo Design", "Brand Identity", "Print Design", "Digital Design", "Typography", "Packaging Design", "Motion Graphics", "Other"),
+
         mutableListOf("Programming", "https://cdn.sanity.io/images/tlr8oxjg/production/1ca7b34a8d5308a03ae186dfe72caabce0327fe2-1456x816.png?w=3840&q=100&fit=clip&auto=format","Web Development", "Mobile Development", "Game Development", "Data Science", "Machine Learning", "Artificial Intelligence", "Database Development", "Blockchain Development", "Cloud Computing", "Full Stack Development", "Software Development", "DevOps", "Cybersecurity", "Other"),
-        mutableListOf("Teaching", "https://d138zd1ktt9iqe.cloudfront.net/media/seo_landing_files/file-teaching-skills-1605625101.jpg","Mathematics", "Physics", "Chemistry", "Biology", "Geography", "History", "Economics", "Business", "Marketing", "Management", "Finance", "Accounting", "Other"),
         mutableListOf("Translation", "https://www.textmaster.com/blog/wp-content/uploads/2021/05/Professional-Translation-Service-725x350.png","Technical Translation", "Literary Translation", "Legal Translation", "Medical Translation", "Localization", "Other"),
+        mutableListOf("Teaching", "https://d138zd1ktt9iqe.cloudfront.net/media/seo_landing_files/file-teaching-skills-1605625101.jpg","Mathematics", "Physics", "Chemistry", "Biology", "Geography", "History", "Economics", "Business", "Marketing", "Management", "Finance", "Accounting", "Other"),
+
         mutableListOf("Fitness Training", "https://media.post.rvohealth.io/wp-content/uploads/2020/02/man-exercising-plank-push-up-1200x628-facebook.jpg", "Personal Training", "Group Fitness", "Strength Training","Cardio Training", "https://example.com/cardio-training.jpg","Yoga Instruction","Other"),
         mutableListOf("UI/UX Design", "https://assets-global.website-files.com/6100d0111a4ed76bc1b9fd54/64664e9cd07202af8bcdc5e4_5757453.jpg",  "User Research", "Wireframing", "Prototyping", "Interaction Design", "Visual Design", "App Design", "Web Design", "Mobile Design", "Game Design", "AR/VR Design", "Other"),
         mutableListOf("Video Editing", "https://p16-capcut-va.ibyteimg.com/tos-maliva-i-6rr7idwo9f-us/537850b4865c4607b503d62f432b55f3~tplv-6rr7idwo9f-image.image", "Film Editing", "Animation Editing", "Color Correction", "Sound Editing", "Motion Graphics", "Other"),
@@ -58,6 +60,8 @@ class tempData {
         mutableListOf("Accountant", "https://nowcfo.com/wp-content/uploads/2022/09/microsoftteams-1200x570.jpg", "Financial Accounting", "Tax Accounting", "Auditing", "Management Accounting", "Forensic Accounting", "Other")
 
     )
+
+
 
 
     val freelancerClass : MutableList<FreelancerClass> = mutableListOf()
@@ -77,7 +81,6 @@ class tempData {
                     pastProjects = mutableListOf("Project A", "Project B", "Project C"),
                     ongoingProjects = mutableListOf("Project D", "Project E"),
                     careerFields = mutableListOf("Software Developer", "Web Developer", "Mobile Developer"),
-
                     completedGivenProjects = mutableListOf("Project F", "Project G"),
                     ongoingGivenProjects = mutableListOf("Project H", "Project I"),
                     country = "Turkey",

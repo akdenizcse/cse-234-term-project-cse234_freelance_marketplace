@@ -35,7 +35,12 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
         composable("signup") { SignUpScreen() }
         composable("profile") { ProfileView(navController) }
         composable("messages") { MessagesScreen(navController) }
-        composable("freelancers") { FreelancersScreen(navController) }
+        composable("freelancers/{cField}" , arguments = listOf(navArgument("cField"){type = NavType.StringType})) { backStackEntry ->
+
+            println("gridi 1")
+            val cField = backStackEntry.arguments?.getString("cField") ?: ""
+            println("gridi 2")
+            FreelancersScreen(navController,cField) }
         composable("jobs") { JobsScreen(navController) }
         composable(
             route = "freelancerDetailScreen/{UID}",
@@ -60,6 +65,7 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
         )){ backStackEntry ->
             val index = backStackEntry.arguments?.getInt("index") ?: 0
             val goTo = backStackEntry.arguments?.getString("goTo") ?: ""
+            println("gotoooooooo"+goTo)
             FieldsDetailsView(index,navController,goTo)
 
         }

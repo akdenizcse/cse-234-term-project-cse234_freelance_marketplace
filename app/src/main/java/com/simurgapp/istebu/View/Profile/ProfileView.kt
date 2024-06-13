@@ -128,7 +128,8 @@ fun ProfileView(navController: NavController) {
                         if(isUserCreated) {
                             navController.navigate("getFreelancerInfoView")
                         } else {
-                            navController.navigate("getUserInfoView")
+                            val cameF = true
+                            navController.navigate("getUserInfoView/${cameF}")
                         }
                     },
                     text = "Freelancer Olmak İstiyorum"
@@ -138,7 +139,9 @@ fun ProfileView(navController: NavController) {
             }
             if (!isUserCreated) {
                 FilledTonalButton(
-                    onClick = { navController.navigate("getUserInfoView") },
+                    onClick = {
+                        var cameF = false
+                        navController.navigate("getUserInfoView/${cameF}") },
                     text = "Üyeliği Tamamla"
                 )
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
