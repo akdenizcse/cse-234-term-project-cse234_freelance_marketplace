@@ -202,6 +202,7 @@ class FirestoreUserRepository {
             .update("completedGivenProjects", mutableListOf(projectUID))
             .addOnFailureListener({ e -> Log.w(TAG, "Error writing document", e) })
     }
+
     fun fetchChatsByUID(uid: String, onSuccess: (List<Chats>) -> Unit, onFailure: (Exception) -> Unit) {
         db.collection("chats")
             .whereArrayContains("chatMembers", uid)
