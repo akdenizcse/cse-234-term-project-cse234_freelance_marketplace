@@ -2,15 +2,18 @@ package com.simurgapp.istebu.View.Messages
 
 
 import android.annotation.SuppressLint
+import android.provider.CalendarContract.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simurgapp.istebu.Model.tempData
@@ -24,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.firestore.toObject
 import com.simurgapp.istebu.Model.Message
 import com.simurgapp.istebu.Model.UserClass
+import com.simurgapp.istebu.ui.theme.Orange500
 
 @Composable
 fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewModel: MessagesViewModel = viewModel()) {
@@ -51,6 +55,7 @@ fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewM
         // add backgraound color
         Box( modifier = Modifier
             .fillMaxWidth()
+
             .background(Orange200), contentAlignment = Alignment.CenterStart){
             PicTextItem(sire = "", title = "${reciver.value.name} ${reciver.value.surname}", subtitle = reciver.value.job , imageUrl = reciver.value.imageURL ) {
 
@@ -58,11 +63,13 @@ fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewM
 
 
         }
+
         LazyColumn(
             modifier = Modifier.weight(1f),
             reverseLayout = true,
             contentPadding = PaddingValues(16.dp)
         ) {
+
             if (messages.isNotEmpty()) {
                 items(messages.size) { index ->
                     MessageCard(message = messages[messages.size - 1 - index].message , sender = messages[messages.size - 1 - index].senderId == senderId)
@@ -85,18 +92,24 @@ fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewM
 }
 
 @Composable
-fun MessageCard(message: String , sender : Boolean ) {
+fun MessageCard(message: String, sender: Boolean) {
     Row(
-        modifier = Modifier.fillMaxSize(), // Occupy the entire screen
-        horizontalArrangement = if (sender) Arrangement.End else Arrangement.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = if (sender) Arrangement.End else Arrangement.Start
     ) {
-        Spacer(modifier = Modifier.weight(1f)) // Push the card to the bottom
-
-        Card(modifier = Modifier.padding(2.dp)) {
+        Card(
+            modifier = Modifier
+                .padding(2.dp),
+            colors = CardDefaults.cardColors(if (sender) Orange500 else Orange200),
+            shape = RoundedCornerShape(8.dp)
+        ) {
             Text(
                 text = message,
                 fontSize = 18.sp,
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(12.dp),
+                color = Color.Black
             )
         }
     }
