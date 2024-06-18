@@ -39,10 +39,11 @@ import com.simurgapp.istebu.ui.theme.darkerOrange
 fun SelectableDropDown(
     careerFields: List<String>,
     selectedIndices: MutableList<String>,
+    text : String,
     onItemSelected: (Int) -> Unit
 ) {
     var dropControl by remember { mutableStateOf(false) }
-    var text = remember { mutableStateOf("Select Career Fields") }
+    var text = remember { mutableStateOf(text) }
 
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,

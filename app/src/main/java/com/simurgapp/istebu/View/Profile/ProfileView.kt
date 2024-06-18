@@ -287,7 +287,7 @@ fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Proje
         ) {
             Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold)
             IconButton(
-                onClick = { /TODO/ },
+                onClick = { },
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Show all")

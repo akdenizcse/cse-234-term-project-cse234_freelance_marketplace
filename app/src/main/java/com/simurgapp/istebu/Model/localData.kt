@@ -25,6 +25,7 @@ class SharedPreferencesHelper(context: Context) {
     fun isLoggedIn(): Boolean {
         return sharedPreferences.getBoolean("is_logged_in", false)
     }
+
     fun isUserCreated(): Boolean {
         return sharedPreferences.getBoolean("is_user_created", false)
     }

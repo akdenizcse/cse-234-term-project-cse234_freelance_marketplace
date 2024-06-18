@@ -40,7 +40,7 @@ fun FreelancersScreen(navController: NavController, subBranch: String) {
                 subBranch,
                 freelancers[index].imageURL
             ) {
-                navController.navigate("freelancerDetailScreen/${index}")
+                navController.navigate("freelancerDetailScreen/${item.UID}")
             }
         }
     }

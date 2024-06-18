@@ -45,12 +45,12 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
         composable(
             route = "freelancerDetailScreen/{UID}",
             arguments = listOf(
-                navArgument("UID") { type = NavType.IntType }
+                navArgument("UID") { type = NavType.StringType }
 
 
             )
         ) { backStackEntry ->
-            val myInt = backStackEntry.arguments?.getInt("UID") ?: 0
+            val myInt = backStackEntry.arguments?.getString("UID") ?: ""
             freelancerDetailsScreen(myInt, navController)
         }
         composable("getFreelancerInfoView") { GetFreelancerInfoView(navController) }
@@ -71,7 +71,11 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
         }
         composable("projectView") { ProjectView(navController) }
         composable("offersView") { OffersView(navController) }
-        composable("messageDetail"){ MessagesDetail() }
+        composable("messageDetail/{chatID}/{senderId}/{reciverId}" , arguments = listOf(navArgument("chatID"){type = NavType.StringType})){ backStackEntry ->
+            val chatID = backStackEntry.arguments?.getString("chatID") ?: ""
+            val senderId = backStackEntry.arguments?.getString("senderId") ?: ""
+            val reciverId = backStackEntry.arguments?.getString("reciverId") ?: ""
+            MessagesDetail(chatID,senderId,reciverId) }
         composable("paymentPage") { paymentPage() }
         composable("reviewScreen") { ReviewScreen() }
     }

@@ -9,35 +9,49 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.simurgapp.istebu.Model.SharedPreferencesHelper
+import com.simurgapp.istebu.Model.UserClass
+
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.IconButtonOne
 import com.simurgapp.istebu.View.UIElements.TextFieldOne
+import com.simurgapp.istebu.ViewModel.MessagesViewModel
 import com.simurgapp.istebu.ui.theme.Orange200
 import com.simurgapp.istebu.ui.theme.darkerOrange
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
-fun MessagesScreen(navController: NavController) {
+fun MessagesScreen(navController: NavController ,viewModel: MessagesViewModel = viewModel()) {
     val tempData = tempData()
-    var text =  remember {
+    val text =  remember {
         mutableStateOf("")
     }
+    val chats by viewModel.chats.collectAsState()
+    val context = LocalContext.current
+    val sharedPreferencesHelper = SharedPreferencesHelper(context)
+    val currentUserID = sharedPreferencesHelper.getUID() ?: ""
+    val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
+
     Column (modifier = Modifier
         .fillMaxWidth()
         .verticalScroll(rememberScrollState())){
@@ -46,18 +60,40 @@ fun MessagesScreen(navController: NavController) {
 
         Row (modifier = Modifier.fillMaxWidth() , horizontalArrangement = Arrangement.SpaceEvenly , verticalAlignment = Alignment.CenterVertically ){
             TextFieldOne(labelText = "Search", leadingIconOne = Icons.Default.Search , colorOne = Orange200, colorTwo = darkerOrange , text = text )
-            IconButtonOne(icon = Icons.Default.Search, contentDescription =  "search", onClick = { /*TODO*/ } , buttonSize = 48 , iconSize = 48)
+            IconButtonOne(icon = Icons.Default.Search, contentDescription =  "search", onClick = { } , buttonSize = 48 , iconSize = 48)
         }
         Spacer(modifier = Modifier.padding(16.dp))
 
-        for (i in 0..10) {
+        for (chat in chats){
+            val chatMembers = chat.chatMembers.toMutableList()
+            chatMembers.remove(currentUserID)
+            val reciverId = chatMembers[0]
+            val name = remember {
+                mutableStateOf("")
+            }
+            val surname = remember {
+                mutableStateOf("")
+            }
+            println(reciverId)
+            viewModel.getUserByUID(reciverId,
+                onSuccess = { users ->
+                    println("User fetched successfully " + users)
+                    name.value = users.name
+                    surname.value = users.surname
+                },
+                onFailure = { exception -> println("Error fetching user by UID: ${exception.message}") }
+
+            )
             MessageItem(
-                imageURL = tempData.getFreeLancerClass()[i].imageURL,
-                message = "Hello, I am interested",
-                name = tempData.getFreeLancerClass()[i].name,
-                surname = tempData.getFreeLancerClass()[i].surname,
-                date = "2024-05-01",
-                navController = navController
+                imageURL = "user!!.imageURL",
+                message = chat.lastMessage.message,
+                name = name.value,
+                surname = surname.value,
+                date = dateFormat.format(chat.lastMessage.timestamp),
+                navController = navController,
+                chatId = chat.chatId,
+                senderId = currentUserID,
+                reciverId = reciverId
             )
         }
         Spacer(modifier = Modifier.height(64.dp))
@@ -65,13 +101,15 @@ fun MessagesScreen(navController: NavController) {
 }
 
 @Composable
-fun MessageItem(imageURL : String, message : String ,name: String , surname: String , date: String,navController: NavController){
+fun MessageItem(imageURL : String, message : String ,name: String , surname: String , date: String,navController: NavController , chatId : String , senderId : String, reciverId : String) {
 
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .border(1.dp, color = androidx.compose.ui.graphics.Color.Gray)
-            .clickable { navController.navigate("messageDetail") }
+            .clickable {
+                println("chat ıd $chatId")
+                navController.navigate("messageDetail/$chatId/$senderId/$reciverId") }
             .padding(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
