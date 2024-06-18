@@ -27,18 +27,19 @@ data class FreelancerClass(
     var subBranches: MutableList<String> = mutableListOf(),
 )
 data class UserClass(
-    var UID : String,
-    var name : String,
-    var surname : String,
-    var imageURL: String,
-    var email : String,
-    var phoneNumber: String,
-    var job : String,
+    var UID: String = "",
+    var name: String = "",
+    var surname: String = "",
+    var imageURL: String = "",
+    var email: String = "",
+    var phoneNumber: String = "",
+    var job: String = "",
     var completedGivenProjects: MutableList<String> = mutableListOf(),
     var ongoingGivenProjects: MutableList<String> = mutableListOf(),
-    var country : String,
-    var city : String,
+    var country: String = "",
+    var city: String = ""
 )
+
 data class CareerFields(
     var name: String,
     var imageURL: String,
@@ -96,4 +97,17 @@ data class OffersClass(
     var isRejected: Boolean,
     var isFinished: Boolean,
     var comment: String,
+)
+data class Chats(
+    val chatId : String = "",
+    val chatMembers : List<String> = listOf(),
+    val createdDate : Long = System.currentTimeMillis(),
+    val lastMessage : Message = Message(),
+)
+data class Message(
+    val senderId: String = "",
+    val receiverId: String = "",
+    val status: String = "",
+    val message: String = "",
+    val timestamp: Long = System.currentTimeMillis()
 )
