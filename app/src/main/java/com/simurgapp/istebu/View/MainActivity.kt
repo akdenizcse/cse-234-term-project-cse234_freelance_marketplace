@@ -3,6 +3,7 @@ package com.simurgapp.istebu.View
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
@@ -43,6 +44,7 @@ fun MainActivityContent(navController: NavHostController ){
     val backViewModel = remember { BackViewModel() }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
 
     Scaffold(
         topBar = {

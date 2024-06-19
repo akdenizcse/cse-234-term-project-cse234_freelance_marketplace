@@ -1,6 +1,7 @@
 package com.simurgapp.istebu.View.RegistrationProcedure
 
 import LoginsigninViewModel
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -80,7 +81,9 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
 
         FilledTonalButton(onClick = {
 
-            viewModel.signIn(emailText.value, passwordText.value)
+            viewModel.signIn(emailText.value, passwordText.value , onError ={
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            })
 
 
         }, text = "Log in" )

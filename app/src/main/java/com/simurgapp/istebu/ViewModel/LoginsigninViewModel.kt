@@ -44,7 +44,7 @@ class LoginsigninViewModel(val sharedPreferencesHelper: SharedPreferencesHelper)
         println("veri çekildi : ${sharedPreferencesHelper.getUID()}")
         println("veri çekildi : ${sharedPreferencesHelper.isLoggedIn()}")
     }
-    fun signIn(email: String, password: String) {
+    fun signIn(email: String, password: String , onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
                 val res = model.signIn(email, password)
@@ -60,10 +60,12 @@ class LoginsigninViewModel(val sharedPreferencesHelper: SharedPreferencesHelper)
                 } else {
                     errorState.value = res.exceptionOrNull()?.message
                     print(res.exceptionOrNull()?.message)
+                    onError(res.exceptionOrNull()?.message!!)
                 }
             } catch (e: Exception) {
                 errorState.value = e.message
                 print(e.message)
+                onError(e.message!!)
             }
         }
     }
