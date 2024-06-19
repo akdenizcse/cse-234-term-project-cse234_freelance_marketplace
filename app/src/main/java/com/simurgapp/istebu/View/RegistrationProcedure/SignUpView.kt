@@ -1,7 +1,6 @@
 package com.simurgapp.istebu.View.RegistrationProcedure
 
 import LoginsigninViewModel
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.View.UIElements.TextFieldOne
@@ -27,7 +25,7 @@ import com.simurgapp.istebu.ui.theme.Orange500
 
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen() {
     val emailText = remember { mutableStateOf("") }
     val passwordText = remember { mutableStateOf("") }
     val passwordText2 = remember { mutableStateOf("") }
@@ -45,29 +43,19 @@ Box( modifier = Modifier.fillMaxSize(),
     ) {
         TextFieldOne("Email", Icons.Default.Email, Orange200, Orange500, emailText)
         Spacer(modifier = Modifier.padding(8.dp))
-        TextFieldOne("Password", Icons.Default.Lock, Orange200, Orange500, passwordText, true)
+        TextFieldOne("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
         Spacer(modifier = Modifier.padding(8.dp))
         TextFieldOne(
             "Password Again",
             Icons.Default.Lock,
             Orange200,
             Orange500,
-            passwordText2,
-            true
+            passwordText2
         )
         Spacer(modifier = Modifier.padding(16.dp))
 
         FilledTonalButton(onClick = {
-            val result = viewModel.signUp(emailText.value, passwordText.value,
-                onSuccess =
-                {
-                    navController.popBackStack()
-                },
-                onError = {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
-
-            )
+            val result = viewModel.signUp(emailText.value, passwordText.value)
             println(result)
 
         }, text = "Sign Up")
