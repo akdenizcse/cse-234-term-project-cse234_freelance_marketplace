@@ -75,7 +75,7 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
     ){
         TextFieldOne("Email", Icons.Default.Email, Orange200, Orange500, emailText)
         Spacer(modifier = Modifier.padding(8.dp))
-        TextFieldOne("Password", Icons.Default.Lock, Orange200, Orange500, passwordText)
+        TextFieldOne("Password", Icons.Default.Lock, Orange200, Orange500, passwordText ,true)
         Spacer(modifier = Modifier.height(48.dp))
 
         FilledTonalButton(onClick = {

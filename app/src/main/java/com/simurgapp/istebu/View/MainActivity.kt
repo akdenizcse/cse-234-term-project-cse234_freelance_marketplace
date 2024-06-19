@@ -9,9 +9,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.simurgapp.istebu.ui.theme.IsteBuTheme
 import androidx.navigation.compose.rememberNavController
 import com.simurgapp.istebu.Model.AppNav
@@ -39,13 +41,20 @@ private lateinit var navController: NavHostController
 @Composable
 fun MainActivityContent(navController: NavHostController ){
     val backViewModel = remember { BackViewModel() }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
         topBar = {
-            MyTopAppBar(navController = navController , backViewModel)
+            if (currentRoute != null) {
+                if (!currentRoute.contains("messageDetail"))
+                    MyTopAppBar(navController = navController , backViewModel)
+            }
         },
-        bottomBar = { 
-                    BottomBar(navController = navController)
+        bottomBar = {
+            if (currentRoute != "login" && currentRoute != "signup") {
+                BottomBar(navController = navController)
+            }
         }
         ,
         content = {

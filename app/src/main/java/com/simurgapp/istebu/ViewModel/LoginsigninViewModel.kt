@@ -67,7 +67,7 @@ class LoginsigninViewModel(val sharedPreferencesHelper: SharedPreferencesHelper)
             }
         }
     }
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
                 val res = model.signUp(email, password)
@@ -78,14 +78,19 @@ class LoginsigninViewModel(val sharedPreferencesHelper: SharedPreferencesHelper)
                     sharedPreferencesHelper.saveLoginState(true)
                     sharedPreferencesHelper.saveEmail(email)
                     updateIsLoggedIn(true)
+                    onSuccess() // Call the success callback
                 } else {
-                    errorState.value = res.exceptionOrNull()?.message
-                    print(res.exceptionOrNull()?.message)
+                    val errorMessage = res.exceptionOrNull()?.message ?: "Unknown error"
+                    errorState.value = errorMessage
+                    print(errorMessage)
+                    onError(errorMessage) // Call the error callback
                 }
             } catch (e: Exception) {
-                // Hata durumunda yapılacak işlemler buraya gelebilir
-                errorState.value = e.message
-                print(e.message)
+                // Handle exception
+                val errorMessage = e.message ?: "Unknown error"
+                errorState.value = errorMessage
+                print(errorMessage)
+                onError(errorMessage) // Call the error callback
             }
         }
     }

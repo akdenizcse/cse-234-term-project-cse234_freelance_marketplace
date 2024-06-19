@@ -21,11 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TextFieldOne(labelText: String, leadingIconOne: ImageVector?, colorOne: Color, colorTwo: Color, text : MutableState<String>) {
+fun TextFieldOne(labelText: String, leadingIconOne: ImageVector?, colorOne: Color, colorTwo: Color, text : MutableState<String> , isPassword : Boolean = false) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val inputModifier = Modifier
@@ -58,6 +60,7 @@ fun TextFieldOne(labelText: String, leadingIconOne: ImageVector?, colorOne: Colo
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
             ),
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None ,
             modifier = inputModifier,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,

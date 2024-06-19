@@ -32,7 +32,7 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
     NavHost(navController = navController, startDestination = "login") {
         composable("login") { LoginScreen(navController , backViewModel) }
         composable("home") { MainScreen(navController , backViewModel) }
-        composable("signup") { SignUpScreen() }
+        composable("signup") { SignUpScreen(navController) }
         composable("profile") { ProfileView(navController) }
         composable("messages") { MessagesScreen(navController) }
         composable("freelancers/{cField}" , arguments = listOf(navArgument("cField"){type = NavType.StringType})) { backStackEntry ->
