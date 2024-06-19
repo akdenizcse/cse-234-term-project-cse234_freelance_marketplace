@@ -1,5 +1,6 @@
 package com.simurgapp.istebu.View.UIElements
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -80,6 +81,7 @@ fun BottomBar(navController: NavHostController) {
     }
     }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun AddItem(
     items: BottomNavigationBar,

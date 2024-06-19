@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.simurgapp.istebu.Model.AppNav
 import com.simurgapp.istebu.View.UIElements.BottomBar
 import com.simurgapp.istebu.View.UIElements.MyTopAppBar
+import com.simurgapp.istebu.View.UIElements.indexG
 import com.simurgapp.istebu.ViewModel.BackViewModel
 
 
@@ -44,6 +45,12 @@ fun MainActivityContent(navController: NavHostController ){
     val backViewModel = remember { BackViewModel() }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    when (currentRoute) {
+        "careerFieldsView/jobs" -> indexG = 0
+        "careerFieldsView/freelancers" -> indexG = 1
+        "messages" -> indexG = 2
+        "profile" -> indexG = 3
+    }
 
 
     Scaffold(
