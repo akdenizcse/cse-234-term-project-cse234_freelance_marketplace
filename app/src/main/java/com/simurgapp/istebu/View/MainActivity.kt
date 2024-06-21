@@ -45,6 +45,7 @@ fun MainActivityContent(navController: NavHostController ){
     val backViewModel = remember { BackViewModel() }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    println("current Route   $currentRoute")
     when (currentRoute) {
         "careerFieldsView/jobs" -> indexG = 0
         "careerFieldsView/freelancers" -> indexG = 1

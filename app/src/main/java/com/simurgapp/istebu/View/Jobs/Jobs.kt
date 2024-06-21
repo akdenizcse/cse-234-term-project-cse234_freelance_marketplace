@@ -31,8 +31,8 @@ import java.util.concurrent.Flow
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun JobsScreen(navController: NavController) {
-
+fun JobsScreen(navController: NavController , field :String) {
+    println("Job Screen çalıştı")
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier.fillMaxWidth().padding(16.dp)) {

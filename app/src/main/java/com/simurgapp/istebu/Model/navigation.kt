@@ -41,7 +41,9 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
             val cField = backStackEntry.arguments?.getString("cField") ?: ""
             println("gridi 2")
             FreelancersScreen(navController,cField) }
-        composable("jobs") { JobsScreen(navController) }
+        composable("jobs/{cField}", arguments = listOf(navArgument("cField"){type = NavType.StringType})) { bse ->
+            val cField = bse.arguments?.getString("cField") ?: ""
+            JobsScreen(navController ,cField) }
         composable(
             route = "freelancerDetailScreen/{UID}",
             arguments = listOf(

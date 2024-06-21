@@ -18,9 +18,8 @@ import com.simurgapp.istebu.View.UIElements.PicTextItem
 
 
 fun CareerFieldsView(navController: NavController ,goTo : String) {
-    println(goTo)
     Box (modifier = Modifier.padding(bottom = 64.dp)){
-
+        println("çalıştı ${goTo}")
         GenericListView(list = tempData().careerFields) { item , index->
 
             PicTextItem(sire = index.toString(), title = item[0], subtitle = "", imageUrl = item[1]){

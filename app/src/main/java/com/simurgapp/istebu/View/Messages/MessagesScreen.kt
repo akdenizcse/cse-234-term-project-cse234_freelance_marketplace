@@ -51,7 +51,6 @@ fun MessagesScreen(navController: NavController ,viewModel: MessagesViewModel = 
     val sharedPreferencesHelper = SharedPreferencesHelper(context)
     val currentUserID = sharedPreferencesHelper.getUID() ?: ""
     val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
-
     Column (modifier = Modifier
         .fillMaxWidth()
         .verticalScroll(rememberScrollState())){
