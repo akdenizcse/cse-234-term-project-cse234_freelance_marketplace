@@ -67,25 +67,24 @@ data class JobsClass(
     var isFinished: Boolean,
 )
 data class ProjectClass(
-    var UID: String,
-    var projectName: String,
-    var clientID: String,
-    var skills: MutableList<String>,
+    var UID: String = "",
+    var projectName: String = "",
+    var clientID: String = "",
+    var skills: MutableList<String> = mutableListOf(),
     var freelancersID: MutableList<String> = mutableListOf(),
-    var description: String,
-    var date: String,
+    var description: String = "",
+    var date: Long = System.currentTimeMillis(),
     var imageURL: MutableList<String> = mutableListOf(),
     var necessaryBranches: MutableList<String> = mutableListOf(),
-    var numberPeople: Int,
-    var budget: Float,
-    var isFinished: Boolean,
-    var estimatedTime: Int,
-    var projectType: String ,//Fixed or Hourly
-    var experienceLevel: String,
+    var numberPeople: Int = 0,
+    var budget: Float = 0f,
+    var isFinished: Boolean = false,
+    var estimatedTime: Int = 0,
+    var projectType: String = "",
+    var experienceLevel: String = "",
     var offers: MutableList<OffersClass> = mutableListOf(),
     var offersPrice: MutableList<Float> = mutableListOf(),
-
-    )
+)
 data class OffersClass(
     var UID: String,
     var price: Int,
