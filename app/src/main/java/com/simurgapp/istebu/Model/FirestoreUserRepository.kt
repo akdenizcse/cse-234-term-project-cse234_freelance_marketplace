@@ -252,7 +252,70 @@ class FirestoreUserRepository {
             onFailure(e)
             Log.d(TAG, "Firestore query failed", e)
         }
+
+
     }
 
+    fun addProject(project: ProjectClass, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("projects").document(project.UID).set(project)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
+    }
+    fun getProjectsByNecessaryBranches(
+        necessaryBranches: String,
+        onSuccess: (List<ProjectClass>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("projects").whereArrayContains("necessaryBranches", necessaryBranches).get()
+            .addOnSuccessListener { documents ->
+                if (documents != null) {
+                    onSuccess(documents.documents.mapNotNull { it.toObject<ProjectClass>() })
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
+
+    fun getProjectsFreelancersID(
+        UID: String,
+        onSuccess: (List<ProjectClass>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("projects").whereArrayContains("freelancersID", UID).get()
+            .addOnSuccessListener { documents ->
+                if (documents != null) {
+                    onSuccess(documents.documents.mapNotNull { it.toObject<ProjectClass>() })
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+                Log.d(TAG, "get failed with ", exception)
+            }
+
+    }
+    fun getProjectsByClientID(
+        UID: String,
+        onSuccess: (List<ProjectClass>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("projects").whereEqualTo("clientID", UID).get()
+            .addOnSuccessListener { documents ->
+                if (documents != null) {
+                    onSuccess(documents.documents.mapNotNull { it.toObject<ProjectClass>() })
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
 
 }

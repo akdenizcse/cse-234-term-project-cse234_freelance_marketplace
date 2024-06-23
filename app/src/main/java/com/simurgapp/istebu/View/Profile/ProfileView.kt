@@ -111,8 +111,8 @@ fun ProfileView(navController: NavController) {
             Divider(modifier = Modifier.padding(vertical = 8.dp))
             Spacer(modifier = Modifier.height(12.dp))
 
-            PastProjectsSection(pastProjects = currentUser.pastProjects)
-            PastProjectsSection(pastProjects = currentUser.ongoingProjects, "Ongoing Projects")
+            PastProjectsSection(pastProjects = currentUser.pastProjects, "Past Projects",{navController.navigate("pastProjectsView")})
+            PastProjectsSection(pastProjects = currentUser.ongoingProjects, "Ongoing Projects",{navController.navigate("ongoingProjectsView")} )
             Spacer(modifier = Modifier.height(16.dp))
             RatingSection(rating = currentUser.rating)
             Spacer(modifier = Modifier.height(16.dp))
@@ -275,7 +275,7 @@ fun RatingSection(rating: Float) {
     }
 }
 @Composable
-fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Projects") {
+fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Projects" , onClick : () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -287,7 +287,7 @@ fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Proje
         ) {
             Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold)
             IconButton(
-                onClick = { },
+                onClick = { onClick()},
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Show all")

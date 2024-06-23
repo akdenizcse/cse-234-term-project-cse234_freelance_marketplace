@@ -1,92 +1,88 @@
-package com.simurgapp.istebu.View.Jobs
+package com.simurgapp.istebu.View.Profile
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simurgapp.istebu.ViewModel.PastOrOngoingProjectsViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.simurgapp.istebu.Model.ProjectClass
-import com.simurgapp.istebu.ViewModel.JobsViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.simurgapp.istebu.Model.SharedPreferencesHelper
+import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun JobsScreen(navController: NavController, field: String, viewModel: JobsViewModel = viewModel()) {
-    println("Job Screen çalıştı")
+fun PastProjectsView(navController: NavController, viewModel: PastOrOngoingProjectsViewModel = viewModel()) {
+    val projects = viewModel.projects.collectAsState().value
+    val context = LocalContext.current
+    val sharedPreferencesHelper = SharedPreferencesHelper(context)
+    val uid = sharedPreferencesHelper.getUID()
 
-    val projectList = viewModel.projects.collectAsState().value
 
-    LaunchedEffect(key1 = field) {
-        viewModel.getProjects(field, {
-            println(projectList)
-        }, {
-            Toast.makeText(navController.context, it.toString(), Toast.LENGTH_SHORT).show()
-        })
-        println("veriler çekildi $field")
+    LaunchedEffect(key1 = viewModel) {
+        if (uid != null) {
+            viewModel.getProjectsByFreelancersID(uid, {
+                println(projects)
+            }, {
+                println(it)
+            })
+
+            viewModel.getProjectsByClientID(uid, {
+                println(projects)
+            }, {
+                println(it)
+            })
+        }
+
     }
 
-    Box(
+    Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp, bottom = 66.dp)
+            .padding(8.dp)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
     ) {
-        FlowRow(
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-        ) {
-            for (project in projectList) {
-                ProjectCard(navController, project)
+        Text(
+            text = "Past Projects",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.padding(8.dp)
+        )
+        projects.forEach { project ->
+            if (project.isFinished) {
+                ProjectCardProfile(navController = NavController(context), project = project)
             }
         }
 
-        FloatingActionButton(
-            onClick = { navController.navigate("addingProjectView") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-        ) {
-            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Project")
-        }
     }
+
 }
 
 @Composable
-fun ProjectCard(navController: NavController, project: ProjectClass) {
+fun ProjectCardProfile(navController: NavController, project: ProjectClass) {
 
-    // time için milisaniyeyi tarihe çevir
     val time = project.date.toLong()
     val date = java.util.Date(time)
     val dateStr = date.toString()
@@ -139,7 +135,7 @@ fun ProjectCard(navController: NavController, project: ProjectClass) {
                 )
             }
             Text(
-                text = project.description,
+                text = if (project.isFinished) "Finished" else "Ongoing",
                 fontSize = 14.sp,
                 color = Color.Gray,
                 maxLines = 2,
@@ -164,7 +160,7 @@ fun ProjectCard(navController: NavController, project: ProjectClass) {
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            com.simurgapp.istebu.View.UIElements.FilledTonalButton(onClick = {  }, text ="See more" )
+            FilledTonalButton(onClick = {  }, text ="See more" )
         }
     }
 }

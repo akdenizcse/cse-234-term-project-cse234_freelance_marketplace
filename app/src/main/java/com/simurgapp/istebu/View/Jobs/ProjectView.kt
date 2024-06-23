@@ -94,7 +94,7 @@ fun ProjectView (navController: NavController)
         skills = mutableListOf("Kotlin", "Android", "UI/UX Design"),
         freelancersID = mutableListOf("freelancer789", "freelancer012"),
         description = "Develop a mobile application with advanced features including user authentication, real-time updates, and a modern UI design.",
-        date = "2024-05-25",
+        date = System.currentTimeMillis(),
         imageURL = tempData().images,
         necessaryBranches = mutableListOf("Development", "Design", "Testing"),
         numberPeople = 3,
@@ -122,12 +122,12 @@ fun ProjectView (navController: NavController)
             Row(modifier = Modifier
                 .padding(16.dp)) {
 
-                    projectImage(project.imageURL[currentImageIndex.value])
+                projectImage(project.imageURL[currentImageIndex.value])
 
             }
         }
-       Row(horizontalArrangement = Arrangement.Center,
-           modifier = Modifier.fillMaxWidth()){
+        Row(horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()){
             IconButtonOne(
                 icon = Icons.Default.ArrowBack,
                 contentDescription = "previous image",
@@ -140,7 +140,7 @@ fun ProjectView (navController: NavController)
 
 
                 })
-           Text(text = "${currentImageIndex.value + 1}/${project.imageURL.size}")
+            Text(text = "${currentImageIndex.value + 1}/${project.imageURL.size}")
             IconButtonOne(
                 icon = Icons.Default.ArrowForward,
                 contentDescription = "next image",
@@ -149,7 +149,7 @@ fun ProjectView (navController: NavController)
 
                     if( currentImageIndex.value < project.imageURL.size-1)
                         currentImageIndex.value += 1
-                println(    "Current Index"+currentImageIndex.value)
+                    println(    "Current Index"+currentImageIndex.value)
                 }
             )
         }
@@ -166,7 +166,6 @@ fun ProjectView (navController: NavController)
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Project description
         Text(
             text = project.description,
             fontSize = 16.sp,
@@ -196,7 +195,7 @@ fun ProjectView (navController: NavController)
         ProfileInfoItem(label = "Number of People Needed", value =project.numberPeople.toString())
         ProfileInfoItem(label = "Project Status", value = if (project.isFinished) "Finished" else "Ongoing")
         Row (modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center){
-            FilledTonalButton(onClick = { /*TODO*/ }, text ="Give offer" )
+            FilledTonalButton(onClick = {  }, text ="Give offer" )
         }
 
         OffersArea(offers = project.offers , navController)
@@ -287,4 +286,3 @@ fun OfferItem(offer: OffersClass , navController: NavController) {
         }
     }
 }
-

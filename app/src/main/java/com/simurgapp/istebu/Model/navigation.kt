@@ -16,10 +16,13 @@ import com.simurgapp.istebu.View.Messages.MessagesScreen
 import com.simurgapp.istebu.View.Profile.ProfileView
 import com.simurgapp.istebu.View.RegistrationProcedure.SignUpScreen
 import com.simurgapp.istebu.View.Freelancer.freelancerDetailsScreen
+import com.simurgapp.istebu.View.Jobs.AddingProjectView
 import com.simurgapp.istebu.View.Jobs.OffersView
 import com.simurgapp.istebu.View.Jobs.ProjectView
 import com.simurgapp.istebu.View.Jobs.paymentPage
 import com.simurgapp.istebu.View.Messages.MessagesDetail
+import com.simurgapp.istebu.View.Profile.OngoingProjectsView
+import com.simurgapp.istebu.View.Profile.PastProjectsView
 import com.simurgapp.istebu.View.RegistrationProcedure.GetFreelancerInfoView
 import com.simurgapp.istebu.View.RegistrationProcedure.GetUserInfoView
 import com.simurgapp.istebu.View.ReviewScreen
@@ -80,5 +83,8 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
             MessagesDetail(chatID,senderId,reciverId) }
         composable("paymentPage") { paymentPage() }
         composable("reviewScreen") { ReviewScreen() }
+        composable("addingProjectView"){ AddingProjectView(navController)}
+        composable("pastProjectsView"){ PastProjectsView(navController)}
+        composable("ongoingProjectsView") {OngoingProjectsView(navController)}
     }
 }

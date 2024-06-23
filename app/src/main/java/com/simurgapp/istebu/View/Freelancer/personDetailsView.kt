@@ -130,7 +130,7 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
                 ProfileInfoItem(label = "Defination", value = freelancer.value.defination)
                 Divider()
-                PastProjectsSection(pastProjects =freelancer.value.pastProjects)
+                PastProjectsSection(pastProjects =freelancer.value.pastProjects ,"Past Projects" ,{navController.navigate("pastProjectsView")})
                 Spacer(modifier =Modifier.height(48.dp))
                 CommentsArea(comments =freelancer.value.comments)
 
