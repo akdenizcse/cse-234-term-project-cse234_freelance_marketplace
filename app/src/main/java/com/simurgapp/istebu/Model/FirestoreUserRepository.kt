@@ -176,32 +176,7 @@ class FirestoreUserRepository {
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
     }
 
-    fun addReviewToUser(UID: String, review: String) {
-        db.collection("Users").document(UID)
-            .update("reviews", mutableListOf(review))
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-    }
 
-    fun addOngoingProjectToFreelancer(UID: String, projectUID: String) {
-        db.collection("Freelancers").document(UID)
-            .update("ongoingProjects", mutableListOf(projectUID))
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-    }
-
-    fun addOngoingProjectToUser(UID: String, projectUID: String) {
-        db.collection("Users").document(UID)
-            .update("ongoingGivenProjects", mutableListOf(projectUID))
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-    }
-
-    fun addCompletedProjectToFreelancer(UID: String, projectUID: String) {
-        db.collection("Freelancers").document(UID)
-            .update("completedGivenProjects", mutableListOf(projectUID))
-            .addOnFailureListener({ e -> Log.w(TAG, "Error writing document", e) })
-    }
 
     fun fetchChatsByUID(uid: String, onSuccess: (List<Chats>) -> Unit, onFailure: (Exception) -> Unit) {
         db.collection("chats")
@@ -316,6 +291,35 @@ class FirestoreUserRepository {
                 onFailure(exception)
                 Log.d(TAG, "get failed with ", exception)
             }
+    }
+    fun getProjectByUID(
+        UID: String,
+        onSuccess: (ProjectClass) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("projects").document(UID).get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val project = document.toObject<ProjectClass>()
+                    if (project != null) {
+                        onSuccess(project)
+                    } else {
+                        onFailure(Exception("Project is null"))
+                    }
+                } else {
+                    onFailure(Exception("Document is null"))
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
+    fun updateProjectStatusToFinished(projectUID: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val db = Firebase.firestore
+        db.collection("projects").document(projectUID).update("finished", true)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
     }
 
 }

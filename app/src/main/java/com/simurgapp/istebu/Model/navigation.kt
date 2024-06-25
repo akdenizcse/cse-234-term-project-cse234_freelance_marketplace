@@ -74,7 +74,9 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
             FieldsDetailsView(index,navController,goTo)
 
         }
-        composable("projectView") { ProjectView(navController) }
+        composable("projectView/{projectId}", arguments = listOf(navArgument("projectId"){type = NavType.StringType})) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId") ?: ""
+            ProjectView(navController ,projectId) }
         composable("offersView") { OffersView(navController) }
         composable("messageDetail/{chatID}/{senderId}/{reciverId}" , arguments = listOf(navArgument("chatID"){type = NavType.StringType})){ backStackEntry ->
             val chatID = backStackEntry.arguments?.getString("chatID") ?: ""

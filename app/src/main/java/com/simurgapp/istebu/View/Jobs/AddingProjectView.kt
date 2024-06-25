@@ -108,6 +108,7 @@ fun AddingProjectView(navController: NavController) {
         )
 
 
+
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             BasicTextField(
                 value = budget.value,
@@ -189,6 +190,28 @@ fun AddingProjectView(navController: NavController) {
                     .padding(bottom = 8.dp)
             )
         }
+            BasicTextField(
+                value = numberPeople.value,
+                onValueChange = { numberPeople.value = it },
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Gray.copy(alpha = 0.1f))
+                            .padding(8.dp)
+                    ) {
+                        if (numberPeople.value.isEmpty()) {
+                            Text("Number of People", color = Color.Gray)
+                        }
+                        innerTextField()
+                    }
+                },
+                modifier = Modifier
+                    .width(150.dp)
+                    .padding(bottom = 8.dp)
+            )
+
+
+
 
         Column {
             Text(text = "Skills", fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp))
@@ -294,6 +317,7 @@ fun AddingProjectView(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
         Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center ){
             com.simurgapp.istebu.View.UIElements.FilledTonalButton(onClick = {
+                println("basıldııııı")
                 val project = ProjectClass(
                     UID = UUID.randomUUID().toString(),
                     projectName = projectName.value,

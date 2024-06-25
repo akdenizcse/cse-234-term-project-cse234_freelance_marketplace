@@ -32,6 +32,7 @@ fun OngoingProjectsView(
 
     LaunchedEffect(key1 = viewModel) {
         if (uid != null) {
+            viewModel.resetProjects()
             viewModel.getProjectsByFreelancersID(uid, { println(projects) }, { println(it) })
             viewModel.getProjectsByClientID(uid, { println(projects) }, { println(it) })
         }

@@ -72,7 +72,8 @@ fun PastProjectsView(navController: NavController, viewModel: PastOrOngoingProje
         )
         projects.forEach { project ->
             if (project.isFinished) {
-                ProjectCardProfile(navController = NavController(context), project = project)
+
+                ProjectCardProfile(navController = navController, project = project)
             }
         }
 
@@ -91,7 +92,16 @@ fun ProjectCardProfile(navController: NavController, project: ProjectClass) {
             .padding(8.dp)
             .fillMaxWidth()
             .clickable {
-                navController.navigate("projectView/${project.UID}")
+                println("project : ${project.toString()}")
+                try {
+                    println("project UID : ${project.UID}")
+                    navController.navigate("projectView/${project.UID}")
+                } catch (e: Exception) {
+                    println(e )
+
+                }
+
+
             },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
@@ -135,6 +145,7 @@ fun ProjectCardProfile(navController: NavController, project: ProjectClass) {
                 )
             }
             Text(
+
                 text = if (project.isFinished) "Finished" else "Ongoing",
                 fontSize = 14.sp,
                 color = Color.Gray,

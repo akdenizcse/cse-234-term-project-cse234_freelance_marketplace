@@ -27,6 +27,12 @@ class PastOrOngoingProjectsViewModel : ViewModel() {
                 onSuccess(it)
             }, onFailure
         )
+
+
+
+    }
+    fun resetProjects() {
+        _projects.value = emptyList()
     }
 
 }

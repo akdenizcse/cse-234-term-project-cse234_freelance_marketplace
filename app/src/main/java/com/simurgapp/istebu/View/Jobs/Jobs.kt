@@ -95,6 +95,7 @@ fun ProjectCard(navController: NavController, project: ProjectClass) {
             .padding(8.dp)
             .fillMaxWidth()
             .clickable {
+
                 navController.navigate("projectView/${project.UID}")
             },
         shape = RoundedCornerShape(16.dp),
@@ -164,7 +165,8 @@ fun ProjectCard(navController: NavController, project: ProjectClass) {
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            com.simurgapp.istebu.View.UIElements.FilledTonalButton(onClick = {  }, text ="See more" )
         }
     }
+
+
 }
