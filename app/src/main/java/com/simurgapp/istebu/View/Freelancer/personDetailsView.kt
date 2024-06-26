@@ -1,5 +1,6 @@
 package com.simurgapp.istebu.View.Freelancer
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,12 +39,11 @@ import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.CommentsArea
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.ViewModel.MessagesViewModel
+import com.simurgapp.istebu.ViewModel.ProfileViewModel
 import java.util.UUID
 @Composable
 fun freelancerDetailsScreen(uid: String, navController: NavController) {
-    val tempData = tempData()
     val firestoreUserRepository = com.simurgapp.istebu.Model.FirestoreUserRepository()
-
     var freelancer : MutableState<FreelancerClass> = remember {
         mutableStateOf(FreelancerClass())
     }
@@ -53,7 +54,11 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
         mutableStateOf("")
     }
     val MViewModel = MessagesViewModel()
-    LaunchedEffect(key1 =uid) {
+    val profileViewModel = ProfileViewModel()
+    val projects = profileViewModel.pastProjects.collectAsState().value
+
+        LaunchedEffect(key1 =uid) {
+
         firestoreUserRepository.getFreelancerByUID(uid, { document ->
             freelancer.value = document.toObject<FreelancerClass>()!!
             println("Current User ID: $currentUserID")
@@ -72,8 +77,11 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
         }, { exception ->
             println("Failed to get freelancer: $exception")
         })
-
-
+            profileViewModel.getPastProjectsByFreelancersID(uid, {
+                println(projects)
+            }, {
+                Toast.makeText(context, "Failed to get projects", Toast.LENGTH_SHORT).show()
+            })
 
 
     }
@@ -130,7 +138,7 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
                 ProfileInfoItem(label = "Defination", value = freelancer.value.defination)
                 Divider()
-                PastProjectsSection(pastProjects =freelancer.value.pastProjects ,"Past Projects" ,{navController.navigate("pastProjectsView")})
+                PastProjectsSection(pastProjects =  projects ,"Past Projects" ,{navController.navigate("pastProjectsView")})
                 Spacer(modifier =Modifier.height(48.dp))
                 CommentsArea(comments =freelancer.value.comments)
 

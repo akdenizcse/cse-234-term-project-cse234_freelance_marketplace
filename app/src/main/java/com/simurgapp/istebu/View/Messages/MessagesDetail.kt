@@ -42,7 +42,7 @@ fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewM
     LaunchedEffect(key1 = chatID){
         viewModel.fetchMessages(chatID)
         firestoreUserRepository.getUserByUID(reciverId, { document ->
-            reciver.value = document.toObject<UserClass>()!!
+            reciver.value = document
         }, { exception ->
             println("Failed to get freelancer: $exception")
         })

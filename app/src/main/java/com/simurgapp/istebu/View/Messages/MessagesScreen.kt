@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,9 @@ fun MessagesScreen(navController: NavController ,viewModel: MessagesViewModel = 
     val sharedPreferencesHelper = SharedPreferencesHelper(context)
     val currentUserID = sharedPreferencesHelper.getUID() ?: ""
     val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.fetchChatsByUID(currentUserID)
+    }
     Column (modifier = Modifier
         .fillMaxWidth()
         .verticalScroll(rememberScrollState())){
@@ -108,7 +112,8 @@ fun MessageItem(imageURL : String, message : String ,name: String , surname: Str
             .border(1.dp, color = androidx.compose.ui.graphics.Color.Gray)
             .clickable {
                 println("chat ıd $chatId")
-                navController.navigate("messageDetail/$chatId/$senderId/$reciverId") }
+                navController.navigate("messageDetail/$chatId/$senderId/$reciverId")
+            }
             .padding(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)

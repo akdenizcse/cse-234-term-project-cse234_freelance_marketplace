@@ -1,6 +1,7 @@
 package com.simurgapp.istebu.View.Profile
 
 import LoginsigninViewModel
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -31,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -52,41 +54,53 @@ import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.UIElements.CircleImage
 import com.simurgapp.istebu.View.UIElements.CommentsArea
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.simurgapp.istebu.Model.ProjectClass
+import com.simurgapp.istebu.ViewModel.PastOrOngoingProjectsViewModel
+import com.simurgapp.istebu.ViewModel.ProfileViewModel
 
 
 @Composable
-fun ProfileView(navController: NavController) {
+fun ProfileView(navController: NavController , viewModel: ProfileViewModel = viewModel()) {
     val context = LocalContext.current
     val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
+    val userID = sharedPreferencesHelper.getUID() ?: ""
     val loginViewModel = LoginsigninViewModel(sharedPreferencesHelper)
     var tempData = tempData()
     val imageSize = 200
+    val onGoingProjects = viewModel.onGoingProjects.collectAsState().value
+    val pastProjects = viewModel.pastProjects.collectAsState().value
 
     val isUserCreated by loginViewModel.isUserCreated.collectAsState()
     val isFreelancerCreated by loginViewModel.isFreelancerCreated.collectAsState()
 
-    val currentUser = FreelancerClass(
-        UID = "1",
-        name = "Ali Berk",
-        surname = "Yeşilduman",
-        imageURL = tempData.images.random(),
-        dailyPrice = 100,
-        email = "berkyesilduman@gmail.com",
-        phoneNumber = "5459328569",
-        education = "Computer Engineering",
+    val currentUser =  viewModel.user.collectAsState().value ?: FreelancerClass(
+        name = "Name",
+        surname = "Surname",
+        email = "email",
+        phoneNumber = "phone",
+        education = "education",
+        country = "country",
+        city = "city",
+        careerFields = mutableListOf("fields"),
+        pastProjects = mutableListOf("Past Projects"),
+        ongoingProjects = mutableListOf("Ongoing Projects"),
         rating = 4.5f,
-        pastProjects = mutableListOf("Project A", "Project B", "Project C"),
-        ongoingProjects = mutableListOf("Project D", "Project E"),
-        completedGivenProjects = mutableListOf("Project F", "Project G"),
-        ongoingGivenProjects = mutableListOf("Project H", "Project I"),
-        careerFields = mutableListOf("Java", "Kotlin", "Python", "C++"),
-        reviews = mutableListOf("Excellent work!", "Very professional."),
-        comments = mutableListOf("Great work!", "Very professional.", "Highly recommend!"),
-        country = "Turkey",
-        job = "Software Developer",
-        city = "Istanbul",
+        comments = mutableListOf("comments"),
+        imageURL = "https://picsum.photos/200/300"
+    )
+    LaunchedEffect(viewModel) {
+        viewModel.resetPastAndOngoingProjects()
 
-        )
+        viewModel.getUserData(userID,
+            onFailure = { exception ->
+                Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+            })
+        viewModel.getProjects(userID,
+            onFailure = { exception ->
+                Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+            })
+    }
 
     Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.TopCenter) {
         Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,6 +108,8 @@ fun ProfileView(navController: NavController) {
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             ProfileImageSection(tempData = tempData, imageSize = imageSize)
+
+
             Text(
                 text = "${currentUser.name} ${currentUser.surname}",
                 fontSize = 24.sp,
@@ -111,8 +127,8 @@ fun ProfileView(navController: NavController) {
             Divider(modifier = Modifier.padding(vertical = 8.dp))
             Spacer(modifier = Modifier.height(12.dp))
 
-            PastProjectsSection(pastProjects = currentUser.pastProjects, "Past Projects",{navController.navigate("pastProjectsView")})
-            PastProjectsSection(pastProjects = currentUser.ongoingProjects, "Ongoing Projects",{navController.navigate("ongoingProjectsView")} )
+            PastProjectsSection(pastProjects =  pastProjects , "Past Projects",{navController.navigate("pastProjectsView")})
+            PastProjectsSection(pastProjects = onGoingProjects, "Ongoing Projects",{navController.navigate("ongoingProjectsView")} )
             Spacer(modifier = Modifier.height(16.dp))
             RatingSection(rating = currentUser.rating)
             Spacer(modifier = Modifier.height(16.dp))
@@ -275,7 +291,7 @@ fun RatingSection(rating: Float) {
     }
 }
 @Composable
-fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Projects" , onClick : () -> Unit) {
+fun PastProjectsSection(pastProjects: List<ProjectClass> ,title : String = "Past Projects" , onClick : () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -321,7 +337,7 @@ fun PastProjectsSection(pastProjects: List<String> ,title : String = "Past Proje
                             )
                     ) {
                         Text(
-                            text = project,
+                            text = project.projectName,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,

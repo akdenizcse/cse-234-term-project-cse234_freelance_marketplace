@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -99,10 +100,12 @@ fun AddItem(
                 .clip(CircleShape)
                 .background(background)
                 .clickable(onClick = {
+                    while (navController.popBackStack()){
+
+                    }
                     navController.navigate(items.route) {
                         indexG = index
-                        popUpTo(navController.graph.findStartDestination().id)
-                        launchSingleTop = true
+
                     }
                 })
         ) {
@@ -127,5 +130,5 @@ fun AddItem(
         }
     }
 
-var indexG by mutableStateOf(1)
+var indexG by mutableIntStateOf(1)
 

@@ -32,12 +32,18 @@ import com.simurgapp.istebu.Model.ProjectClass
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 
+
+
+
+
+
 @Composable
 fun PastProjectsView(navController: NavController, viewModel: PastOrOngoingProjectsViewModel = viewModel()) {
     val projects = viewModel.projects.collectAsState().value
     val context = LocalContext.current
     val sharedPreferencesHelper = SharedPreferencesHelper(context)
     val uid = sharedPreferencesHelper.getUID()
+
 
 
     LaunchedEffect(key1 = viewModel) {

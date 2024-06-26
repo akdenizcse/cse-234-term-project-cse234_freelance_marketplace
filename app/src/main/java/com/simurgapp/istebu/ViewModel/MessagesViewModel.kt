@@ -24,10 +24,6 @@ class MessagesViewModel : ViewModel() {
     private val db = Firebase.firestore
     private val firestoreRepository = FirestoreUserRepository()
 
-    init {
-        fetchChatsByUID("pO9wrCpQaSOvykFb6p0Bd2THMhi1")
-        println(_chats.value)
-    }
     fun fetchChatsByUID(uid: String) {
         viewModelScope.launch {
             firestoreRepository.fetchChatsByUID(
@@ -129,7 +125,7 @@ class MessagesViewModel : ViewModel() {
     fun getUserByUID(uid: String, onSuccess:  (UserClass) -> Unit, onFailure: (Exception) -> Unit) {
         viewModelScope.launch {
             println("girdi" + uid)
-            firestoreRepository.getUserByUIDTwo(
+            firestoreRepository.getUserByUID(
                 UID = uid,
                 onSuccess = onSuccess,
                 onFailure = onFailure

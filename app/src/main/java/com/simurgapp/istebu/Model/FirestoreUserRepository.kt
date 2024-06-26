@@ -24,29 +24,20 @@ class FirestoreUserRepository {
         OnSuccess: () -> Unit
     ) {
 
-        getUserByUID(UID, { document ->
-            val name = document.getString("name") ?: ""
-            val surname = document.getString("surname") ?: ""
-            val country = document.getString("country") ?: ""
-            val city = document.getString("city") ?: ""
-            val email = document.getString("email") ?: ""
-            val phoneNumber = document.getString("phoneNumber") ?: ""
-            val job = document.getString("job") ?: ""
-
-
+        getUserByUID(UID, {
             val freelancer = hashMapOf(
-                "name" to name,
+                "name" to it.name,
                 "UID" to UID,
-                "job" to job,
-                "surname" to surname,
-                "country" to country,
-                "city" to city,
-                "email" to email,
-                "phoneNumber" to phoneNumber,
+                "job" to it.job,
+                "surname" to it.surname,
+                "country" to it.country,
+                "city" to it.city,
+                "email" to it.email,
+                "phoneNumber" to it.phoneNumber,
                 "education" to education,
                 "careerFields" to careerFields,
                 "definition" to definition,
-                "imageURL" to "",
+                "imageURL" to it.imageURL,
                 "dailyPrice" to dailyPrice,
                 "rating" to 0.0f,
                 "pastProjects" to mutableListOf<String>(),
@@ -138,15 +129,20 @@ class FirestoreUserRepository {
 
     fun getUserByUID(
         UID: String,
-        onSuccess: (DocumentSnapshot) -> Unit,
+        onSuccess: (UserClass) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         db.collection("Users").document(UID).get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    onSuccess(document)
+                    val user = document.toObject<UserClass>()
+                    if (user != null) {
+                        onSuccess(user)
+                    } else {
+                        onFailure(Exception("User is null"))
+                    }
                 } else {
-                    Log.d(TAG, "No such document")
+                    onFailure(Exception("Document is null"))
                 }
             }
             .addOnFailureListener { exception ->
@@ -194,42 +190,7 @@ class FirestoreUserRepository {
                 }
             }
     }
-    fun getUserByUIDTwo(
-        UID: String,
-        onSuccess: (UserClass) -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        println("girdi 2")
-        try {
-            db.collection("Users").document(UID).get()
-                .addOnSuccessListener { document ->
-                    try {
-                        if (document != null) {
-                            val user = document.toObject<UserClass>()
-                            if (user != null) {
-                                onSuccess(user)
-                            } else {
-                                onFailure(Exception("User is null"))
-                            }
-                        } else {
-                            onFailure(Exception("Document is null"))
-                        }
-                    } catch (e: Exception) {
-                        onFailure(e)
-                        Log.d(TAG, "Error processing document", e)
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    onFailure(exception)
-                    Log.d(TAG, "get failed with ", exception)
-                }
-        } catch (e: Exception) {
-            onFailure(e)
-            Log.d(TAG, "Firestore query failed", e)
-        }
 
-
-    }
 
     fun addProject(project: ProjectClass, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         db.collection("projects").document(project.UID).set(project)
