@@ -1,12 +1,17 @@
 package com.simurgapp.istebu.Model
 
 import android.content.ContentValues.TAG
+import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.auth.User
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.storage
 
 class FirestoreUserRepository {
 
@@ -151,19 +156,7 @@ class FirestoreUserRepository {
             }
     }
 
-    fun addImageToUser(UID: String, imageURL: String) {
-        db.collection("Users").document(UID)
-            .update("imageURL", imageURL)
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-    }
 
-    fun addImageToFreelancer(UID: String, imageURL: String) {
-        db.collection("Freelancers").document(UID)
-            .update("imageURL", imageURL)
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-    }
 
     fun addReviewToFreelancer(UID: String, review: String) {
         db.collection("Freelancers").document(UID)
@@ -281,6 +274,163 @@ class FirestoreUserRepository {
         db.collection("projects").document(projectUID).update("finished", true)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { exception -> onFailure(exception) }
+    }
+    fun addOfferToProject(projectUID: String, offer: OffersClass, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("projects").document(projectUID).update("offers", mutableListOf(offer))
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
+    }
+    fun uploadImageForUser(userId: String, imageUri: Uri , onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit){
+        val storageRef = Firebase.storage.reference
+        val userRef = storageRef.child("users/$userId/${imageUri.lastPathSegment}")
+
+        val uploadTask = userRef.putFile(imageUri)
+
+        uploadTask.addOnSuccessListener {
+
+            userRef.downloadUrl.addOnSuccessListener { uri ->
+                onSuccess(uri)
+
+            }.addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+        }.addOnFailureListener { exception ->
+            onFailure(exception)
+
+        }
+    }
+    fun getImageForUser(userId: String, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
+        val storageRef = Firebase.storage.reference
+
+        val userRef = storageRef.child("users/$userId")
+
+        userRef.listAll().addOnSuccessListener { listResult ->
+            if (!listResult.items.isNullOrEmpty()) {
+                val tasks = listResult.items.map { itemRef ->
+                    itemRef.metadata
+                }
+
+                Tasks.whenAllComplete(tasks).addOnSuccessListener {
+                    val sortedItems = listResult.items.sortedByDescending { itemRef ->
+                        itemRef.metadata.result.creationTimeMillis
+                    }
+
+                    if (sortedItems.isNotEmpty()) {
+                        sortedItems[0].downloadUrl.addOnSuccessListener { uri ->
+                            val imageUrl = uri
+                            onSuccess(imageUrl)
+                        }.addOnFailureListener { exception ->
+                            onFailure(exception)
+                        }
+                    } else {
+                        onFailure(Exception("Kullanıcının yüklenmiş resmi bulunamadı."))
+                    }
+                }.addOnFailureListener { exception ->
+                    onFailure(exception)
+                }
+            } else {
+                onFailure(Exception("Kullanıcının yüklenmiş resmi bulunamadı."))
+            }
+        }.addOnFailureListener { exception ->
+            onFailure(exception)
+        }
+    }
+    fun uploadImagesForProject(projectId: String, imageUris: List<Uri>, onSuccess: (List<String>) -> Unit, onFailure: (Exception) -> Unit) {
+        val storageRef = Firebase.storage.reference
+        val imageUrls = mutableListOf<String>()
+        val uploadTasks = mutableListOf<UploadTask>()
+
+        // Tüm resimleri sırayla yükle
+        imageUris.forEachIndexed { index, imageUri ->
+            val imageName = "image_${index + 1}_${System.currentTimeMillis()}.${imageUri.pathSegments.lastOrNull()}"
+            val projectRef = storageRef.child("projects/$projectId/$imageName")
+
+            val uploadTask = projectRef.putFile(imageUri)
+
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                // Yükleme başarılı olduğunda resmin URL'sini al
+                projectRef.downloadUrl.addOnSuccessListener { uri ->
+                    val imageUrl = uri.toString()
+                    imageUrls.add(imageUrl)
+
+                    // Tüm resimler yüklendiyse onSuccess callback'i çağır
+                    if (imageUrls.size == imageUris.size) {
+                        onSuccess(imageUrls)
+                    }
+                }.addOnFailureListener { exception ->
+                    onFailure(exception)
+                }
+            }.addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+
+            // UploadTask listesine ekle
+            uploadTasks.add(uploadTask)
+        }
+    }
+
+    fun getImagesForProject(projectId: String, onSuccess: (List<String>) -> Unit, onFailure: (Exception) -> Unit) {
+        val storageRef = Firebase.storage.reference
+        val projectRef = storageRef.child("projects/$projectId")
+
+        projectRef.listAll()
+            .addOnSuccessListener { listResult ->
+                val imageUrls = mutableListOf<String>()
+                val downloadTasks = mutableListOf<Task<Uri>>()
+
+                listResult.items.forEach { itemRef ->
+                    val downloadTask = itemRef.downloadUrl
+                    downloadTasks.add(downloadTask)
+
+                    downloadTask.addOnSuccessListener { uri ->
+                        val imageUrl = uri.toString()
+                        imageUrls.add(imageUrl)
+
+                        if (imageUrls.size == listResult.items.size) {
+                            onSuccess(imageUrls)
+                        }
+                    }.addOnFailureListener { exception ->
+                        onFailure(exception)
+                    }
+                }
+            }.addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
+
+    fun addCommitAndRatingToFreeLancer(UID: String, commit: String, rating: Float) {
+        db.collection("Freelancers").document(UID)
+            .update("comments", mutableListOf(commit))
+            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        db.collection("Freelancers").document(UID)
+            .update("rating", rating)
+            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+    }
+
+    fun addOffer(offer: OffersClass, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("offers").document(offer.UID).set(offer)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
+    }
+    fun getOffersByProjectId(
+        projectID: String,
+        onSuccess: (List<OffersClass>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("offers").whereEqualTo("projectID", projectID).get()
+            .addOnSuccessListener { documents ->
+                if (documents != null) {
+                    onSuccess(documents.documents.mapNotNull { it.toObject<OffersClass>() })
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+                Log.d(TAG, "get failed with ", exception)
+            }
     }
 
 }

@@ -19,6 +19,7 @@ fun FreelancersScreen(navController: NavController, subBranch: String) {
     val freelancers = remember { mutableStateListOf<FreelancerClass>() }
     val firestoreUserRepository = FirestoreUserRepository()
 
+
     LaunchedEffect(subBranch) {
         firestoreUserRepository.getFreelancersBYSubBranches(subBranch, { documents ->
             println("subBranch : $subBranch")
@@ -34,11 +35,19 @@ fun FreelancersScreen(navController: NavController, subBranch: String) {
 
     Box(modifier = Modifier.padding(bottom = 64.dp)) {
         GenericListView(freelancers) { item, index ->
+            var imageUrl = remember {
+                mutableStateOf("")
+            }
+            firestoreUserRepository.getImageForUser(item.UID, { url ->
+                imageUrl.value = url.toString()
+            }, { exception ->
+                Log.d(ContentValues.TAG, "Failed to get image: ", exception)
+            })
             PicTextItem(
                 freelancers[index].UID,
                 freelancers[index].name,
                 subBranch,
-                freelancers[index].imageURL
+                imageUrl = imageUrl.value
             ) {
                 navController.navigate("freelancerDetailScreen/${item.UID}")
             }
