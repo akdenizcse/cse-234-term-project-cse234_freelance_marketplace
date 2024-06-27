@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simurgapp.istebu.Model.tempData
 
 @Composable
 
@@ -40,8 +41,9 @@ fun CircleImage(
     contentDescription: String? = null,
     size: Int = 100
 ) {
+
     val painter: Painter = rememberImagePainter(
-        data = imageUrl,
+        data = if (imageUrl == "") tempData().images.random() else imageUrl,
         builder = {
             transformations(CircleCropTransformation())
         }
@@ -59,7 +61,7 @@ fun CircleImage(
                 .size(imageSize.dp)
                 .padding(4.dp)
                 .clip(CircleShape)
-                    ,
+            ,
             contentScale = androidx.compose.ui.layout.ContentScale.Crop
         )
     }
@@ -82,6 +84,3 @@ fun PicTextItem(sire: String, title: String, subtitle: String , imageUrl: String
         }
     }
 }
-
-
-

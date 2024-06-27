@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,13 +26,14 @@ import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.View.UIElements.PicTextItem
 import com.simurgapp.istebu.ViewModel.MessagesViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.google.firebase.firestore.toObject
 import com.simurgapp.istebu.Model.Message
 import com.simurgapp.istebu.Model.UserClass
 import com.simurgapp.istebu.ui.theme.Orange500
 
 @Composable
-fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewModel: MessagesViewModel = viewModel()) {
+fun MessagesDetail(navController: NavController,chatID : String  ,senderId : String,reciverId : String, viewModel: MessagesViewModel = viewModel() ) {
 
     var message = remember { mutableStateOf("") }
     val messages by viewModel.messages.collectAsState()
@@ -38,7 +41,9 @@ fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewM
         mutableStateOf(UserClass())
     }
     val firestoreUserRepository = com.simurgapp.istebu.Model.FirestoreUserRepository()
-
+    val imageUrl = remember {
+        mutableStateOf("")
+    }
     LaunchedEffect(key1 = chatID){
         viewModel.fetchMessages(chatID)
         firestoreUserRepository.getUserByUID(reciverId, { document ->
@@ -46,7 +51,11 @@ fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewM
         }, { exception ->
             println("Failed to get freelancer: $exception")
         })
-        // app bar ı görünmez yap
+        firestoreUserRepository.getImageForUser(reciverId, { url ->
+            imageUrl.value = url.toString()
+        }, { exception ->
+            println("Failed to get image: $exception")
+        })
 
 
     }
@@ -57,7 +66,13 @@ fun MessagesDetail(chatID : String  ,senderId : String,reciverId : String, viewM
             .fillMaxWidth()
 
             .background(Orange200), contentAlignment = Alignment.CenterStart){
-            PicTextItem(sire = "", title = "${reciver.value.name} ${reciver.value.surname}", subtitle = reciver.value.job , imageUrl = reciver.value.imageURL ) {
+            Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
+                IconButton(onClick = { navController.popBackStack()  }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+                PicTextItem(sire = "", title = "${reciver.value.name} ${reciver.value.surname}", subtitle = reciver.value.job , imageUrl = imageUrl.value ) {
+
+                }
 
             }
 

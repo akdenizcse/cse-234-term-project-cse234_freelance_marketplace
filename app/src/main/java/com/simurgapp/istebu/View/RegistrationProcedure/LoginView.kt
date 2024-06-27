@@ -47,14 +47,14 @@ fun LoginScreen(navController: NavHostController , backViewModel: BackViewModel)
 
 @Composable
 fun LogInContent(navController: NavHostController, backViewModel: BackViewModel) {
-    val emailText = remember { mutableStateOf("a@b.com") }
-    val passwordText = remember { mutableStateOf("123456") }
+    val emailText = remember { mutableStateOf("") }
+    val passwordText = remember { mutableStateOf("") }
     val iBack by backViewModel.isBack.collectAsState()
     val context = LocalContext.current
     val sharedPreferencesHelper = remember { SharedPreferencesHelper(context) }
     val viewModel = LoginsigninViewModel(sharedPreferencesHelper)
-    val signInState by viewModel.signInState.collectAsState()
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
+
     var firstSign = remember {
         mutableStateOf(true)
     }
@@ -95,12 +95,9 @@ fun LogInContent(navController: NavHostController, backViewModel: BackViewModel)
 
 
             }
-            
+
 
         }, text = "Sign up" )
-        Spacer(modifier = Modifier.height(16.dp))
-        CircleImage(imageUrl = "https://banner2.cleanpng.com/20180413/rfe/kisspng-google-logo-google-cloud-platform-gboard-google-pa-4-5ad0e95b57ec99.9189954815236406673602.jpg")
 
     }
 }
-

@@ -47,6 +47,7 @@ fun MessagesScreen(navController: NavController ,viewModel: MessagesViewModel = 
     val text =  remember {
         mutableStateOf("")
     }
+    val firestoreUserRepository = com.simurgapp.istebu.Model.FirestoreUserRepository()
     val chats by viewModel.chats.collectAsState()
     val context = LocalContext.current
     val sharedPreferencesHelper = SharedPreferencesHelper(context)
@@ -55,6 +56,7 @@ fun MessagesScreen(navController: NavController ,viewModel: MessagesViewModel = 
     LaunchedEffect(key1 = viewModel) {
         viewModel.fetchChatsByUID(currentUserID)
     }
+
     Column (modifier = Modifier
         .fillMaxWidth()
         .verticalScroll(rememberScrollState())){
@@ -87,8 +89,17 @@ fun MessagesScreen(navController: NavController ,viewModel: MessagesViewModel = 
                 onFailure = { exception -> println("Error fetching user by UID: ${exception.message}") }
 
             )
+            var imageURL = remember {
+                mutableStateOf("")
+            }
+            firestoreUserRepository.getImageForUser(reciverId, { url ->
+                imageURL.value = url.toString()
+            }, { exception ->
+                println("Failed to get image: $exception")
+            })
+
             MessageItem(
-                imageURL = "user!!.imageURL",
+                imageURL = imageURL.value,
                 message = chat.lastMessage.message,
                 name = name.value,
                 surname = surname.value,
