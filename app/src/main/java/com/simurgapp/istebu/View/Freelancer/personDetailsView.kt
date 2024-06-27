@@ -1,5 +1,6 @@
 package com.simurgapp.istebu.View.Freelancer
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,7 @@ import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.ViewModel.MessagesViewModel
 import com.simurgapp.istebu.ViewModel.ProfileViewModel
 import java.util.UUID
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun freelancerDetailsScreen(uid: String, navController: NavController) {
     val firestoreUserRepository = com.simurgapp.istebu.Model.FirestoreUserRepository()
@@ -56,8 +58,11 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
     val MViewModel = MessagesViewModel()
     val profileViewModel = ProfileViewModel()
     val projects = profileViewModel.pastProjects.collectAsState().value
+    var imageUri = remember {
+        mutableStateOf("")
+    }
 
-        LaunchedEffect(key1 =uid) {
+    LaunchedEffect(key1 =uid) {
 
         firestoreUserRepository.getFreelancerByUID(uid, { document ->
             freelancer.value = document.toObject<FreelancerClass>()!!
@@ -77,11 +82,17 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
         }, { exception ->
             println("Failed to get freelancer: $exception")
         })
-            profileViewModel.getPastProjectsByFreelancersID(uid, {
-                println(projects)
-            }, {
-                Toast.makeText(context, "Failed to get projects", Toast.LENGTH_SHORT).show()
-            })
+        profileViewModel.getPastProjectsByFreelancersID(uid, {
+            println(projects)
+        }, {
+            Toast.makeText(context, "Failed to get projects", Toast.LENGTH_SHORT).show()
+        })
+
+        firestoreUserRepository.getImageForUser(uid, { url ->
+            imageUri.value = url.toString()
+        }, { exception ->
+            println("Failed to get image: $exception")
+        })
 
 
     }
@@ -96,7 +107,7 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            CircleImage(imageUrl = freelancer.value.imageURL, size = 200)
+            CircleImage(imageUrl = imageUri.value, size = 200)
 
             Text(
                 text = "${freelancer.value.name} ${freelancer.value.surname}",
@@ -113,10 +124,6 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
 
 
             RatingSection(rating =freelancer.value.rating)
-            Column {
-                FilledTonalButton(onClick = { navController.navigate("reviewScreen") }, text = "Rewiew")
-                Text(text = "!! iş bittiğinde görünecek")
-            }
             FilledTonalButton(onClick = { println(currentUserID)
                 println(freelancer)
 
@@ -140,7 +147,9 @@ fun freelancerDetailsScreen(uid: String, navController: NavController) {
                 Divider()
                 PastProjectsSection(pastProjects =  projects ,"Past Projects" ,{navController.navigate("pastProjectsView")})
                 Spacer(modifier =Modifier.height(48.dp))
-                CommentsArea(comments =freelancer.value.comments)
+                CommentsArea(comments =freelancer.value.comments){
+                    navController.navigate("commentsView")
+                }
 
             }
             Spacer(modifier = Modifier.height(64.dp))

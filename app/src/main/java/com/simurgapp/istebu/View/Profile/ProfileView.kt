@@ -1,6 +1,9 @@
 package com.simurgapp.istebu.View.Profile
 
 import LoginsigninViewModel
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,8 +60,13 @@ import com.simurgapp.istebu.View.UIElements.CommentsArea
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simurgapp.istebu.Model.ProjectClass
-import com.simurgapp.istebu.ViewModel.PastOrOngoingProjectsViewModel
 import com.simurgapp.istebu.ViewModel.ProfileViewModel
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+
+import androidx.compose.material.IconButton
+
 
 
 @Composable
@@ -71,10 +80,10 @@ fun ProfileView(navController: NavController , viewModel: ProfileViewModel = vie
     val onGoingProjects = viewModel.onGoingProjects.collectAsState().value
     val pastProjects = viewModel.pastProjects.collectAsState().value
 
-    val isUserCreated by loginViewModel.isUserCreated.collectAsState()
-    val isFreelancerCreated by loginViewModel.isFreelancerCreated.collectAsState()
+    val isUserCreated by viewModel.isCompleted.collectAsState()
+    val isFreelancerCreated by viewModel.isFreelancer.collectAsState()
 
-    val currentUser =  viewModel.user.collectAsState().value ?: FreelancerClass(
+    val currentUser = viewModel.user.collectAsState().value ?: FreelancerClass(
         name = "Name",
         surname = "Surname",
         email = "email",
@@ -91,7 +100,8 @@ fun ProfileView(navController: NavController , viewModel: ProfileViewModel = vie
     )
     LaunchedEffect(viewModel) {
         viewModel.resetPastAndOngoingProjects()
-
+        viewModel.getIsCompleted(userID)
+        viewModel.getIsFreelancer(userID)
         viewModel.getUserData(userID,
             onFailure = { exception ->
                 Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
@@ -102,12 +112,19 @@ fun ProfileView(navController: NavController , viewModel: ProfileViewModel = vie
             })
     }
 
-    Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.TopCenter) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            ProfileImageSection(tempData = tempData, imageSize = imageSize)
+            ProfileImageSection(
+                tempData = tempData,
+                imageSize = imageSize,
+                viewModel = viewModel,
+                userID = userID
+            )
+
 
 
             Text(
@@ -127,8 +144,14 @@ fun ProfileView(navController: NavController , viewModel: ProfileViewModel = vie
             Divider(modifier = Modifier.padding(vertical = 8.dp))
             Spacer(modifier = Modifier.height(12.dp))
 
-            PastProjectsSection(pastProjects =  pastProjects , "Past Projects",{navController.navigate("pastProjectsView")})
-            PastProjectsSection(pastProjects = onGoingProjects, "Ongoing Projects",{navController.navigate("ongoingProjectsView")} )
+            PastProjectsSection(
+                pastProjects = pastProjects,
+                "Past Projects",
+                { navController.navigate("pastProjectsView") })
+            PastProjectsSection(
+                pastProjects = onGoingProjects,
+                "Ongoing Projects",
+                { navController.navigate("ongoingProjectsView") })
             Spacer(modifier = Modifier.height(16.dp))
             RatingSection(rating = currentUser.rating)
             Spacer(modifier = Modifier.height(16.dp))
@@ -141,7 +164,7 @@ fun ProfileView(navController: NavController , viewModel: ProfileViewModel = vie
 
                 FilledTonalButton(
                     onClick = {
-                        if(isUserCreated) {
+                        if (isUserCreated) {
                             navController.navigate("getFreelancerInfoView")
                         } else {
                             val cameF = true
@@ -157,16 +180,29 @@ fun ProfileView(navController: NavController , viewModel: ProfileViewModel = vie
                 FilledTonalButton(
                     onClick = {
                         var cameF = false
-                        navController.navigate("getUserInfoView/${cameF}") },
+                        navController.navigate("getUserInfoView/${cameF}")
+                    },
                     text = "Üyeliği Tamamla"
                 )
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
+            FilledTonalButton(
+                onClick = {
+                    sharedPreferencesHelper.clear()
+                    while (navController.popBackStack()) {
+
+                    }
+                    navController.navigate("login")
+                },
+                text = "Log Out"
+            )
 
 
-            CommentsArea(comments = currentUser.comments)
+            CommentsArea(comments = currentUser.comments){
+                navController.navigate("commentsView")
+            }
 
 
             Spacer(modifier = Modifier.height(64.dp))
@@ -179,18 +215,56 @@ fun ProfileView(navController: NavController , viewModel: ProfileViewModel = vie
 
 
 @Composable
-fun ProfileImageSection(tempData: tempData, imageSize: Int) {
+fun ProfileImageSection(
+    tempData: tempData,
+    imageSize: Int,
+    viewModel: ProfileViewModel = viewModel(),
+    userID : String
+
+) {
+    var selectedImageUri = remember { mutableStateOf<Uri?>(null) }
+    val imageUri = viewModel.imageUrl.collectAsState()
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.getImage(userID)
+
+    }
     Box {
-        CircleImage(
-            imageUrl = tempData.images.random(),
-            size = imageSize,
-            modifier = Modifier
-                .size(imageSize.dp)
-                .clip(CircleShape)
-            //.shadow(2.5.dp, CircleShape)
-        )
+        if (imageUri.value != null) {
+            CircleImage(
+                imageUrl = imageUri.value.toString(),
+                size = imageSize,
+                modifier = Modifier
+                    .size(imageSize.dp)
+                    .clip(CircleShape)
+            )
+        } else {
+            CircleImage(
+                imageUrl = tempData.images.random(),
+                size = imageSize,
+                modifier = Modifier
+                    .size(imageSize.dp)
+                    .clip(CircleShape)
+            )
+        }
+
+        val onImageSelectedLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val selectedImageUri = result.data?.data
+                selectedImageUri?.let {
+                    viewModel.addImage(userID,selectedImageUri)
+                }
+            }
+        }
+
         IconButton(
             onClick = {
+                val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                galleryIntent.type = "image/*"
+                galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
+
+                onImageSelectedLauncher.launch(galleryIntent)
             },
             modifier = Modifier
                 .size(48.dp)
@@ -200,13 +274,12 @@ fun ProfileImageSection(tempData: tempData, imageSize: Int) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Edit,
-                contentDescription = "Camera Icon",
+                contentDescription = "Add Image",
                 tint = Color.Black
             )
         }
     }
 }
-
 @Composable
 fun ProfileInfoSection(currentUser: FreelancerClass) {
     Column {

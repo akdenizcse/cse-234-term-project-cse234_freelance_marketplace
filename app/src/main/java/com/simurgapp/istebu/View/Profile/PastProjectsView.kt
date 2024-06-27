@@ -177,7 +177,6 @@ fun ProjectCardProfile(navController: NavController, project: ProjectClass) {
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            FilledTonalButton(onClick = {  }, text ="See more" )
         }
     }
 }

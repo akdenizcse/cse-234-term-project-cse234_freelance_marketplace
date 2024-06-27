@@ -28,12 +28,12 @@ import com.simurgapp.istebu.ui.theme.IsteBuTheme
 
 
 @Composable
-fun ReviewScreen() {
+fun ReviewScreen(freelanerID: String) {
     var communicationRating by remember { mutableStateOf(4.0f) }
     var serviceQualityRating by remember { mutableStateOf(3.5f) }
     var timingRating by remember { mutableStateOf(1.0f) }
     var comment = remember { mutableStateOf("") }
-    var isPortfolioPermission by remember { mutableStateOf(false) }
+    val firestoreUserRepository = com.simurgapp.istebu.Model.FirestoreUserRepository()
 
     Column(
         modifier = Modifier
@@ -56,20 +56,11 @@ fun ReviewScreen() {
 
         TextFieldOne(labelText = "Comment", leadingIconOne = Icons.Default.Comment, colorOne = Orange200, colorTwo = darkerOrange, text = comment )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Checkbox(
-                checked = isPortfolioPermission,
-                onCheckedChange = { isPortfolioPermission = it }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("I allow the freelancer to add this work to her portfolio.")
-        }
+        com.simurgapp.istebu.View.UIElements.FilledTonalButton(onClick = {
+            val rating = (communicationRating+ serviceQualityRating + timingRating) / 3
+            firestoreUserRepository.addCommitAndRatingToFreeLancer(freelanerID,comment.value,rating)
 
-        com.simurgapp.istebu.View.UIElements.FilledTonalButton(onClick = { /*TODO*/ }, text = "Submit Rewiew" )
+        }, text = "Submit Rewiew" )
         Spacer(modifier = Modifier.height(64.dp))
     }
 }
@@ -148,6 +139,3 @@ fun StarsBar(
 
 
 }
-
-
-

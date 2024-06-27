@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,84 +46,75 @@ import com.simurgapp.istebu.Model.ProjectClass
 import com.simurgapp.istebu.Model.tempData
 import com.simurgapp.istebu.View.Profile.ProfileInfoItem
 import com.simurgapp.istebu.View.UIElements.CircleImage
-import com.simurgapp.istebu.View.UIElements.CommentsArea
 import com.simurgapp.istebu.View.UIElements.IconButtonOne
 import com.simurgapp.istebu.View.UIElements.FilledTonalButton
 import com.simurgapp.istebu.ViewModel.JobsViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simurgapp.istebu.Model.SharedPreferencesHelper
-
+import com.simurgapp.istebu.R
+import com.simurgapp.istebu.ViewModel.MessagesViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ProjectView (navController: NavController,projectId: String , viewModel: JobsViewModel = viewModel())
-{
-
+fun ProjectView(navController: NavController, projectId: String, viewModel: JobsViewModel = viewModel()) {
     var currentImageIndex = remember { mutableIntStateOf(0) }
-    val project : ProjectClass = viewModel.project.collectAsState().value
+    val project = viewModel.project.collectAsState().value
     val context = LocalContext.current
     val sharedPreferencesHelper = SharedPreferencesHelper(context)
     val uid = sharedPreferencesHelper.getUID()
+    val offers = viewModel.offers.collectAsState().value
 
-    LaunchedEffect(key1 = projectId) {
-        viewModel.getProject(projectId, {
-            println(project)
-            println("finished status ${project.isFinished}")
-
+    LaunchedEffect(projectId) {
+        viewModel.getProjectUID(projectId, {
+            println("Project data fetched successfully: $it")
         }, {
-            println(it)
+            println("Error fetching project data: $it")
         })
 
+        viewModel.getOffersByProjectID(projectId, {
+            println("Offers fetched successfully: $it")
+        }, {
+            Toast.makeText(context, "Error fetching offers", Toast.LENGTH_SHORT).show()
+        })
     }
+
     Column(
         modifier = Modifier
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
             .fillMaxSize()
-
-
     ) {
-        if (project.imageURL.isEmpty()) {
-            project.imageURL.add("https://picsum.photos/200/300")
-        }
-
-        Box(modifier = Modifier
-            .border(3.dp, Color.Black, RoundedCornerShape(8.dp))
-            .fillMaxWidth()
-        ){
-            Row(modifier = Modifier
-                .padding(16.dp)) {
-
-                projectImage(project.imageURL[currentImageIndex.value])
-
+        Box(
+            modifier = Modifier
+                .border(3.dp, Color.Black, RoundedCornerShape(8.dp))
+                .fillMaxWidth()
+        ) {
+            Row(modifier = Modifier.padding(16.dp)) {
+                if (project.imageURL.isNotEmpty()) {
+                    projectImage(project.imageURL[currentImageIndex.value])
+                } else {
+                    Text("No images available", color = Color.Gray)
+                }
             }
         }
-        Row(horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()){
+        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             IconButtonOne(
                 icon = Icons.Default.ArrowBack,
                 contentDescription = "previous image",
                 onClick = {
                     if (currentImageIndex.value > 0) {
                         currentImageIndex.value -= 1
-
-
                     }
-
-
                 })
             Text(text = "${currentImageIndex.value + 1}/${project.imageURL.size}")
             IconButtonOne(
                 icon = Icons.Default.ArrowForward,
                 contentDescription = "next image",
                 onClick = {
-
-
-                    if( currentImageIndex.value < project.imageURL.size-1)
+                    if (currentImageIndex.value < project.imageURL.size - 1) {
                         currentImageIndex.value += 1
-                    println(    "Current Index"+currentImageIndex.value)
-                }
-            )
+                    }
+                })
         }
         Text(
             text = project.projectName,
@@ -136,7 +128,6 @@ fun ProjectView (navController: NavController,projectId: String , viewModel: Job
             color = Color.Gray,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-
         Text(
             text = project.description,
             fontSize = 16.sp,
@@ -150,25 +141,23 @@ fun ProjectView (navController: NavController,projectId: String , viewModel: Job
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        FlowRow(
-            modifier = Modifier.padding(bottom = 16.dp)
-        ) {
+        FlowRow(modifier = Modifier.padding(bottom = 16.dp)) {
             project.skills.forEach { skill ->
                 Chip(text = skill)
                 Spacer(modifier = Modifier.width(4.dp))
             }
         }
         ProfileInfoItem(label = "Budget: ", value = "${project.budget}")
-        ProfileInfoItem(label = "Estimeted Time", value = "${project.estimatedTime} days")
+        ProfileInfoItem(label = "Estimated Time", value = "${project.estimatedTime} ")
         ProfileInfoItem(label = "Project Type ", value = project.projectType)
         ProfileInfoItem(label = "Experience Level", value = project.experienceLevel)
         ProfileInfoItem(label = "Necessary Branches", value = project.necessaryBranches.joinToString(", "))
-        ProfileInfoItem(label = "Number of People Needed", value =project.numberPeople.toString())
+        ProfileInfoItem(label = "Number of People Needed", value = project.numberPeople.toString())
         ProfileInfoItem(label = "Project Status", value = if (project.isFinished) "Finished" else "Ongoing")
         if (project.clientID != uid) {
             if (project.freelancersID.count() < project.numberPeople) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    FilledTonalButton(onClick = { /*TODO: Give offer action */ }, text = "Give offer")
+                    FilledTonalButton(onClick = { navController.navigate("giveOfferView/$projectId") }, text = "Give offer")
                 }
             }
         } else {
@@ -177,32 +166,23 @@ fun ProjectView (navController: NavController,projectId: String , viewModel: Job
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-
                     FilledTonalButton(onClick = {
                         viewModel.updateProjectStatus(projectId, clientID = uid, {
                             navController.popBackStack()
-                            Toast.makeText(context, "Project status updated", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, "Project status updated", Toast.LENGTH_SHORT).show()
                         }, {
-                            Toast.makeText(
-                                context,
-                                "Error updating project status",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(context, "Error updating project status", Toast.LENGTH_SHORT).show()
                         })
+                        navController.navigate("reviewScreen/${if (project.freelancersID[0].count() > 0) project.freelancersID[0] else ""}")
                     }, text = "Finish")
                 }
             }
         }
-
-
-
-        OffersArea(offers = project.offers , navController)
+        OffersArea(offers = offers, navController)
         Spacer(modifier = Modifier.height(64.dp))
-
     }
 }
+
 
 @Composable
 fun Chip(text: String) {
@@ -218,9 +198,17 @@ fun Chip(text: String) {
 @Composable
 fun projectImage(imageUrl: String) {
     Image(
-        painter = rememberImagePainter(data = imageUrl),
+        painter = rememberImagePainter(
+            data = imageUrl,
+            builder = {
+                crossfade(true)
+                listener(
+                    onSuccess = { _, _ -> println("Image loaded successfully: $imageUrl") },
+                    onError = { _, _ -> println("Error loading image: $imageUrl") }
+                )
+            }
+        ),
         contentDescription = null,
-
         modifier = Modifier
             .width(300.dp)
             .height(200.dp)
@@ -231,6 +219,7 @@ fun projectImage(imageUrl: String) {
 }
 @Composable
 fun OffersArea(offers: List<OffersClass> , navController: NavController) {
+    println("Offers: $offers")
     Column {
         Text(
             text = "Offers",
@@ -244,7 +233,23 @@ fun OffersArea(offers: List<OffersClass> , navController: NavController) {
     }
 }
 @Composable
-fun OfferItem(offer: OffersClass , navController: NavController) {
+fun OfferItem(offer: OffersClass , navController: NavController , viewModel: MessagesViewModel = viewModel()) {
+    val freelancerName = remember {
+        mutableStateOf("isim girilmedi")
+    }
+    val freelancerImage = remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(key1 = offer.freelancerID) {
+        viewModel.getUserByUID(offer.freelancerID,
+            onSuccess = { user ->
+                freelancerName.value = user.name
+                freelancerImage.value = user.imageURL
+            },
+            onFailure = { exception -> println("Error fetching user by UID: ${exception.message}") }
+        )
+    }
     Row(
         modifier = Modifier
             .padding(16.dp)
@@ -255,13 +260,13 @@ fun OfferItem(offer: OffersClass , navController: NavController) {
             }
             .padding(16.dp)
     ) {
-        CircleImage(imageUrl = tempData().images.random(), modifier = Modifier.size(50.dp))
+        CircleImage(imageUrl = freelancerImage.value, modifier = Modifier.size(50.dp))
         Spacer(modifier = Modifier.width(16.dp))
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Freelancer Name",
+                text = freelancerName.value,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -273,7 +278,7 @@ fun OfferItem(offer: OffersClass , navController: NavController) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Estimated Time: ${offer.estimatedTime} days",
+                text = "Completion Date: ${offer.estimatedTime} ",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
