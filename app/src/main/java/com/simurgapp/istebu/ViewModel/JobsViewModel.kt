@@ -1,12 +1,12 @@
 package com.simurgapp.istebu.ViewModel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.common.api.Api.Client
 import com.simurgapp.istebu.Model.FirestoreUserRepository
+import com.simurgapp.istebu.Model.OffersClass
 import com.simurgapp.istebu.Model.ProjectClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.UUID
 
 class JobsViewModel : ViewModel() {
 
@@ -17,6 +17,9 @@ class JobsViewModel : ViewModel() {
     private val _project = MutableStateFlow<ProjectClass>(ProjectClass())
     val project : StateFlow<ProjectClass> = _project
 
+    private val _offers = MutableStateFlow<List<OffersClass>>(emptyList())
+    val offers : StateFlow<List<OffersClass> > = _offers
+
 
     fun getProjects(branch : String, onSuccess:(List<ProjectClass>) -> Unit,onFailure: (Exception) -> Unit) {
         firestoreUserRepository.getProjectsByNecessaryBranches(branch, {
@@ -24,12 +27,13 @@ class JobsViewModel : ViewModel() {
             onSuccess(it)
         }, onFailure)
     }
-    fun getProject(projectID : String, onSuccess:(ProjectClass) -> Unit,onFailure: (Exception) -> Unit) {
+    fun getProjectUID(projectID: String, onSuccess: (ProjectClass) -> Unit, onFailure: (Exception) -> Unit) {
         firestoreUserRepository.getProjectByUID(projectID, {
             _project.value = it
             onSuccess(it)
         }, onFailure)
     }
+
 
     fun  updateProjectStatus(projectID: String,clientID : String ,onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val pOViewModel = PastOrOngoingProjectsViewModel()
@@ -45,6 +49,31 @@ class JobsViewModel : ViewModel() {
 
         }, onFailure)
 
+    }
+
+    fun giveOffer(projectID: String, freelancerID: String, price: Int, estimatedTime: String, comment: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val offer = OffersClass(
+            UID = UUID.randomUUID().toString(),
+            price = price,
+            estimatedTime = estimatedTime,
+            projectID = projectID,
+            freelancerID = freelancerID,
+            date = System.currentTimeMillis().toString(),
+            isAccepted = false,
+            isRejected = false,
+            isFinished = false,
+            comment = comment
+        )
+        firestoreUserRepository.addOffer(offer, {
+            onSuccess()
+        }, onFailure)
+    }
+
+    fun getOffersByProjectID(projectID: String, onSuccess: (List<OffersClass>) -> Unit, onFailure: (Exception) -> Unit) {
+        firestoreUserRepository.getOffersByProjectId(projectID, {
+            _offers.value = it
+            onSuccess(it)
+        }, onFailure)
     }
 
 }

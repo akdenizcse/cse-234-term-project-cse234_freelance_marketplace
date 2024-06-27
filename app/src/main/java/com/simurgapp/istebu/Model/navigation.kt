@@ -19,8 +19,10 @@ import com.simurgapp.istebu.View.Freelancer.freelancerDetailsScreen
 import com.simurgapp.istebu.View.Jobs.AddingProjectView
 import com.simurgapp.istebu.View.Jobs.OffersView
 import com.simurgapp.istebu.View.Jobs.ProjectView
+import com.simurgapp.istebu.View.Jobs.GiveOfferView
 import com.simurgapp.istebu.View.Jobs.paymentPage
 import com.simurgapp.istebu.View.Messages.MessagesDetail
+import com.simurgapp.istebu.View.Profile.CommentsView
 import com.simurgapp.istebu.View.Profile.OngoingProjectsView
 import com.simurgapp.istebu.View.Profile.PastProjectsView
 import com.simurgapp.istebu.View.RegistrationProcedure.GetFreelancerInfoView
@@ -82,11 +84,17 @@ fun AppNav(navController : NavHostController, backViewModel: BackViewModel){
             val chatID = backStackEntry.arguments?.getString("chatID") ?: ""
             val senderId = backStackEntry.arguments?.getString("senderId") ?: ""
             val reciverId = backStackEntry.arguments?.getString("reciverId") ?: ""
-            MessagesDetail(chatID,senderId,reciverId) }
+            MessagesDetail(navController,chatID,senderId,reciverId) }
         composable("paymentPage") { paymentPage() }
-        composable("reviewScreen") { ReviewScreen() }
+        composable("reviewScreen/{UID}", arguments = listOf(navArgument("UID"){type = NavType.StringType})) { backStackEntry ->
+            val UID = backStackEntry.arguments?.getString("UID") ?: ""
+            ReviewScreen(UID) }
         composable("addingProjectView"){ AddingProjectView(navController)}
         composable("pastProjectsView"){ PastProjectsView(navController)}
         composable("ongoingProjectsView") {OngoingProjectsView(navController)}
+        composable("giveOfferView/{UID}", arguments = listOf(navArgument("UID"){type = NavType.StringType})) { backStackEntry ->
+            val UID = backStackEntry.arguments?.getString("UID") ?: ""
+            GiveOfferView(navController,UID) }
+        composable("commentsView"){ CommentsView(navController)}
     }
 }

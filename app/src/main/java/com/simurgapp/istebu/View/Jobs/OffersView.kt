@@ -51,7 +51,7 @@ fun OffersView(navController: NavController) {
     var offers = OffersClass(
         UID = "offer001",
         price = 30,
-        estimatedTime = 30,
+        estimatedTime = "30",
         projectID = "proj123",
         freelancerID = "freelancer001",
         date = "2024-05-01",
@@ -67,7 +67,7 @@ fun OffersView(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            ProfileImageSection(tempData = tempData, imageSize = imageSize)
+            ProfileImageSection(tempData = tempData, imageSize = imageSize, userID = offers.freelancerID)
             androidx.compose.material3.Text(
                 text = "Ali Berk Yeşilduman",
                 fontSize = 24.sp,
@@ -75,6 +75,7 @@ fun OffersView(navController: NavController) {
                 modifier = Modifier
 
             )
+
 
             Divider(modifier = Modifier.padding(vertical = 8.dp))
 

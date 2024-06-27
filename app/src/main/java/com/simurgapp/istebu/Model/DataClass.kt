@@ -86,16 +86,16 @@ data class ProjectClass(
     var offersPrice: MutableList<Float> = mutableListOf(),
 )
 data class OffersClass(
-    var UID: String,
-    var price: Int,
-    var estimatedTime: String,
-    var projectID: String,
-    var freelancerID: String,
-    var date: String,
-    var isAccepted: Boolean,
-    var isRejected: Boolean,
-    var isFinished: Boolean,
-    var comment: String,
+    var UID: String = "",
+    var price: Int = 0,
+    var estimatedTime: String = "",
+    var projectID: String = "",
+    var freelancerID: String = "",
+    var date: String = "",
+    var isAccepted: Boolean = false,
+    var isRejected: Boolean = false,
+    var isFinished: Boolean = false,
+    var comment: String = "",
 )
 data class Chats(
     val chatId : String = "",
