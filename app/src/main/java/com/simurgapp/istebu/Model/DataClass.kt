@@ -79,7 +79,7 @@ data class ProjectClass(
     var numberPeople: Int = 0,
     var budget: Float = 0f,
     var isFinished: Boolean = false,
-    var estimatedTime: Int = 0,
+    var estimatedTime: String = "",
     var projectType: String = "",
     var experienceLevel: String = "",
     var offers: MutableList<OffersClass> = mutableListOf(),
@@ -88,7 +88,7 @@ data class ProjectClass(
 data class OffersClass(
     var UID: String,
     var price: Int,
-    var estimatedTime: Int,
+    var estimatedTime: String,
     var projectID: String,
     var freelancerID: String,
     var date: String,
